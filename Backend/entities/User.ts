@@ -1,7 +1,7 @@
 import { Entity, Fields } from "remult";
 
 @Entity("users", {
-    allowApiCrud: true
+    allowApiCrud: true,
 })
 export class User {
     @Fields.string()
