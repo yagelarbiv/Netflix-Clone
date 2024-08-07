@@ -1,8 +1,8 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware'
 import { Data, User } from '../Types';
+import Cookie from 'js-cookie';
 
-const useUserStore = create(persist((set) => ({
+const useUserStore = create((set) => ({
   user: {
     _id: '',
     username: '',
@@ -12,20 +12,19 @@ const useUserStore = create(persist((set) => ({
     profilePicture: '',
     myList: [],
   },
-  setuser: (userData: User) => set({ user: userData }),
-  clearUser: () => set({ user: null }),
-  addToList: (newFavorite: Data, user: User) => {
-    const newList = [...user.myList, newFavorite];
+  setuser: (userData: User) => set(Cookie.set('user', userData.tostring())),
+  getUser: () => set(Cookie.get('user')),
+  clearUser: () => set(Cookie.remove('user')),
+  addToList: (newFavorite: Data) => {
+    const User = Cookie.get('user') as unknown as User;
+    const newList = User.myList ? [...User.myList, newFavorite] : [newFavorite];
     set({ myList: newList });
   },
-  removeFromList: (removeFavorite: Data, user: User) =>{
-    const newList = user.myList.filter((movie) => movie._id !== removeFavorite._id);
+  removeFromList: (removeFavorite: Data) =>{
+    const User = Cookie.get('user') as unknown as User;
+    const newList = User.myList ? User.myList.filter((item) => item._id !== removeFavorite._id) : [];
     set({ myList: newList });
   },
-}),{
-name: 'userStorage', 
-getStorage: () => sessionStorage
 }))
-
 
 export default useUserStore;

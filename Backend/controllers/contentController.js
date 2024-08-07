@@ -1,4 +1,4 @@
-import Content from '../models/Content'
+import Content from '../models/Content.js'
 
 const getContents = async (req, res) => {
     const content = await Content.find({});

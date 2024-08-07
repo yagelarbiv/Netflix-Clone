@@ -16,6 +16,7 @@ export type Data = {
 };
 
 export type User = {
+  tostring(): string;
   _id: string;
   username: string;
   email: string;

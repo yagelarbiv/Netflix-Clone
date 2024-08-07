@@ -2,12 +2,12 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
+    username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     isAdmin: {type: Boolean,default: false},
     profilePicture: {type: String,default: 'https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png'},
-    myList: {type: [Schema.Types.Mixed],default: []}
+    myList: {type: [],default: []}
   },
   {
     timestamps: true,
@@ -15,5 +15,4 @@ const userSchema = new mongoose.Schema(
 );
 
 const User = mongoose.model("User", userSchema);
-
 export default User;

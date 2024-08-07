@@ -1,10 +1,10 @@
-import Product from '../models/Product.js';
-import data from '../data.js';
+import {data} from '../data.js';
 import User from '../models/User.js';
+import Content from '../models/Content.js';
 const seedData = async (req,res) => {
     try {
-        await Product.deleteMany({});
-        const createdProducts = await Product.insertMany(data.products);
+        await Content.deleteMany({});
+        const createdProducts = await Content.insertMany(data.content);
         await User.deleteMany({});
         const createdUsers = await User.insertMany(data.users);
         res.send({ createdProducts, createdUsers });

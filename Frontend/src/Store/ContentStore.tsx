@@ -1,12 +1,10 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { Data, initialState } from '../Types';
+import Cookie from 'js-cookie';
+import { Data } from '../Types';
 
-const useContentStore = create(persist((set) => ({
-  setContent : (content:Data[]) => set((state:initialState) => ({ ...state.List, content })),
-}), {
-  name: 'content',
-  getStorage: () => sessionStorage,
+const useContentStore = create((set) => ({
+  setContent : (content:Data[]) => set(Cookie.set('content', content.toString())),
+  getCookie: () => Cookie.get('content'),
 }));
 
 export default useContentStore;
