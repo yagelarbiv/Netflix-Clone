@@ -1,5 +1,6 @@
 
-function SignIn() {
+
+function HomePage() {
   return (
     <div>
       
@@ -7,4 +8,4 @@ function SignIn() {
   )
 }
 
-export default SignIn
+export default HomePage
