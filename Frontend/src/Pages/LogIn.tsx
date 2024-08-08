@@ -51,8 +51,8 @@ const SigninPage = () => {
     e.preventDefault();
     try {
       if (action === "autoFill") {
-        setPassword("admin@example.com");
-        setEmailAddress("12345");
+        setEmailAddress("admin@example.com");
+        setPassword("12345");
       } else {
         console.log("Wrong Action");
       }

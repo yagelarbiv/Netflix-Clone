@@ -20,21 +20,4 @@ const generateToken = (_id, res) => {
   return token;
 };
 
-const isAuth = async (req, res, next) => {
-  const auth = req.headers.authorization;
-  if (auth) {
-    const token = auth.split(" ")[1];
-    jwt.verify(token, ENV_VARS.JWT_PW, (err, decode) => {
-      if (err) {
-        res.status(401).send({ message: "Invalid token" });
-      } else {
-        req.user = decode;
-        next();
-      }
-    });
-  } else {
-    res.status(401).send({ message: "No token" });
-  }
-};
-
-export { generateToken, isAuth };
+export { generateToken };
