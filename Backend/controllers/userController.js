@@ -1,42 +1,57 @@
-import bcrypt from 'bcryptjs';
-import User from '../models/User.js';
-import {generateToken} from '../utils.js'
+import bcrypt from "bcryptjs";
+import User from "../models/User.js";
+import { generateToken } from "../utils.js";
+import {
+  validateSignInRequest,
+  validateSignUpRequest,
+} from "../vallidations/Auth.js";
 
 const signin = async (req, res) => {
-    const { email, password} = req.body;
+  const { email, password } = req.body;
+  const errors = await validateSignInRequest({ email, password });
+  if (Object.keys(errors).length > 0) {
+    res.status(400).send(errors);
+  } else {
     const user = await User.findOne({ email });
     if (user) {
-      if(bcrypt.compareSync(password, user.password)){
-        res.send({
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          token: generateToken(user),
-        });
+      if (bcrypt.compareSync(password, user.password)) {
+        generateToken(user._id, res);
+        res.send({ ...user._doc, password: "" });
         return;
       }
     }
-    res.status(401).send({ message: 'Invalid email or password' });
-  };
-  
-
-const signup = async (req, res) => {
-
-    const { name, email, password } = req.body;
-    const newUser = new User({
-        name: name,
-        email: email,
-        password: bcrypt.hashSync(password)
-    });
-
-
-    const user = await newUser.save();
-    res.send({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        token: generateToken(user),
-    });
+    res.status(401).send({ message: "Invalid credentials" });
+  }
 };
 
-export {signin,signup}
+const signup = async (req, res) => {
+  const { name, email, password } = req.body;
+  const errors = await validateSignUpRequest({
+    username: name,
+    email,
+    password,
+  });
+  if (Object.keys(errors).length > 0) {
+    res.status(400).send(errors);
+  } else {
+    const newUser = new User({
+      username: name,
+      email: email,
+      password: bcrypt.hashSync(password),
+    });
+    const user = await newUser.save();
+    generateToken(user._id, res);
+    res.status(201).send({ ...user._doc, password: "" });
+  }
+};
+
+const logout = async (req, res) => {
+  try {
+    res.clearCookie("JWT-Netflix");
+    res.send({ message: "Logged out successfully" });
+  } catch (error) {
+    res.status(500).send({ success: false, message: "Failed to log out" });
+  }
+};
+
+export { signin, logout, signup };

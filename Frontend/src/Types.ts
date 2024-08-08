@@ -1,5 +1,4 @@
 export type Data = {
-  _id: string;
   title: string;
   description: string;
   img: string;
@@ -16,18 +15,10 @@ export type Data = {
 };
 
 export type User = {
-  tostring(): string;
-  _id: string;
   username: string;
   email: string;
   password: string;
   isAdmin: boolean;
   profilePicture: string;
   myList: Data[];
-};
-
-export type initialState = {
-  setuser: any;
-  List: Data[];
-  userInfo: User | null;
 };

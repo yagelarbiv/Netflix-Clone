@@ -1,13 +1,12 @@
-import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
-import mongoose from "mongoose";
 import contentRouter from "./routes/contentRouter.js";
 import userRouter from './routes/userRouter.js';
 import seedRouter from './routes/seedRouter.js';
+import { ENV_VARS } from "./config/envVars.js";
+import connectDB from "./config/db.js";
 
-dotenv.config();
-const PORT = process.env.PORT || 5000;
+const PORT = ENV_VARS.PORT;
 const app = express();
 
 app.use(cors());
@@ -23,12 +22,8 @@ app.use('/api/v1/content', contentRouter);
 app.use((err,req,res,next)=> {
     res.status(500).send({message: err.message});
 });
-mongoose
-.connect('mongodb+srv://yagelarbiv2:Ya123456@cluster0.vlxquk7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
-.then(() => {
-    app.listen(PORT, () => {
-        console.log(`server running on port ${PORT}`);
-    });
-}).catch((err) => {
-    console.log(err.message);
+
+app.listen(PORT, () => {
+    console.log(`server running on: http://localhost:${PORT}`);
+    connectDB();
 });

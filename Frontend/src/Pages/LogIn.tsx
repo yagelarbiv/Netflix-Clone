@@ -2,12 +2,16 @@ import React, { useState } from "react";
 import SignForm from "../components/SignForm/SingForm";
 import Footer from "../components/shared/footer";
 import "./LogIn.css";
-import { toast } from "react-toastify";
 import { getError } from "../utils";
 import { useNavigate } from "react-router-dom";
+import { AxiosUsersInstance } from "../axios";
+import useUserStore, { UserStore } from "../Store/UserStore";
 
 /*---> Component <---*/
 const SigninPage = () => {
+  const userStore: UserStore = useUserStore() as UserStore;
+  const setUser: UserStore["setuser"] = userStore.setuser;
+  const setToken: UserStore["setToken"] = userStore.setToken;
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -15,37 +19,47 @@ const SigninPage = () => {
 
   const IsInvalid = password === "" || emailAddress === "";
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    //Axios push to backend and mongo
-    if (IsInvalid) {
-      setError("Please fill out all fields");
-      return;
+    try {
+      const { data } = await AxiosUsersInstance.post("/login", {
+        email: emailAddress,
+        password: password,
+      });
+      setUser({
+        email: data.email,
+        password: "password",
+        username: data.username,
+        isAdmin: data.isAdmin,
+        profilePicture: data.profilePicture,
+        myList: data.myList,
+      });
+      setToken(data.token);
+      navigate("/browse");
+    } catch (error) {
+      setError(getError(error));
+      console.log(getError(error));
     }
   };
 
-
-  const loginHandler = async (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement, MouseEvent>, action: string) => {
+  const loginHandler = (
+    e:
+      | React.FormEvent<HTMLFormElement>
+      | React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    action: string
+  ) => {
     e.preventDefault();
     try {
-        let emailValue:string = "";
-        let passwordValue: string = "";
-
-        if (action === "autoFill") {
-            emailValue = "admin@example.com";
-            passwordValue = "12345";
-        } else {
-          toast.error("Wrong Action");
-        }
-
-        //Axios push to backend and mongo
-        setEmailAddress(emailValue);
-        setPassword(passwordValue);
-        
+      if (action === "autoFill") {
+        setPassword("admin@example.com");
+        setEmailAddress("12345");
+      } else {
+        console.log("Wrong Action");
+      }
     } catch (error) {
-        toast.error(getError(error));
+      console.log(getError(error));
     }
-};
+  };
 
   return (
     <>
@@ -56,7 +70,7 @@ const SigninPage = () => {
             className="logo"
             src="src/assets/Netflix-Logo-large.svg"
             alt="netflix logo"
-            onClick={() => navigate('/')}
+            onClick={() => navigate("/")}
           />
         </nav>
         <SignForm

@@ -1,77 +1,98 @@
+import { useState } from "react";
+import Footer from "../components/shared/footer";
 import "./SignUp.css";
-import { Button, Form } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
+// import { toast } from "react-toastify";
+import { getError } from "../utils";
+import { AxiosUsersInstance } from "../axios";
+import useUserStore, { UserStore } from "../Store/UserStore";
 
-function SignUp() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // const setuser = useUserStore((state: any) => state.setuser);
-  // const navigate = useNavigate();
+function SignupPage() {
+  const userStore: UserStore = useUserStore() as UserStore;
+  const setUser: UserStore["setuser"] = userStore.setuser;
+  const setToken: UserStore["setToken"] = userStore.setToken;
+  const [emailAddress, setEmailAddress] = useState("");
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
 
-  // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault();
-  //   const target = event.target as typeof event.target & {
-  //     email: { value: string };
-  //   };
-  //   const email = target.email.value;
-  //   setuser({ email });
-  // };
-  // const changeLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
-  //   const target = e.target as typeof e.target & {
-  //     language: { value: string };
-  //   };
-  //   const language = target.language.value;
-  //   if (language === "English") {
-  //     localStorage.setItem("language", "English");
-  //   }
-  //   if (language === "עברית") {
-  //     localStorage.setItem("language", "עברית");
-  //   }
-  // };
+  const IsInvalid = password !== confirmPassword || emailAddress === "";
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      const { data } = await AxiosUsersInstance.post("/signup", {
+        email: emailAddress,
+        name: userName,
+        password: password,
+      });
+      setUser({
+        username: userName,
+        email: data.email,
+        password: 'password',
+        isAdmin: false,
+        profilePicture: "",
+        myList: [],
+      });
+      setToken(data.token);
+      navigate("/browse");
+    } catch (error) {
+      console.log(getError(error));
+    }
+  };
 
   return (
-    <div className="sign-up">
-      <div className="opacity"></div>
-      <header>
-        <div className="sign-up-header">
+    <>
+      <div className="header">
+        <div className="OpacityLogin"></div>
+        <nav className="nav">
           <img
             className="logo"
-            src="src\assets\Netflix-Logo-large.svg"
-            alt="Netflix logo"
+            src="src/assets/Netflix-Logo-large.svg"
+            alt="netflix logo"
+            onClick={() => navigate("/")}
           />
-          <div className="sign-up-links">
-            <select title="Language" id="language">
-              <option value="English">English</option>
-              <option value="עברית">עברית</option>
-            </select>
-            <a href="Log-in">
-              <Button className="sign-up-Button" variant="danger">Sign In</Button>
-            </a>
-          </div>
+        </nav>
+        <div className="Wrapper">
+          <form className="Form" onSubmit={handleSubmit} method="POST">
+            <h1 className="Title">Sign UP</h1>
+            <input
+              className="FormInput"
+              type="text"
+              placeholder="Enter UserName"
+              onChange={({ target }) => setUserName(target.value)}
+            />
+            <input
+              className="FormInput"
+              type="text"
+              placeholder="Email Address"
+              onChange={({ target }) => setEmailAddress(target.value)}
+            />
+            <input
+              className="FormInput"
+              type="password"
+              placeholder="Password"
+              autoComplete="off"
+              onChange={({ target }) => setPassword(target.value)}
+            />
+            <input
+              className="FormInput"
+              type="password"
+              placeholder="Confirm Password"
+              autoComplete="off"
+              onChange={({ target }) => setConfirmPassword(target.value)}
+            />
+            <button className="Button" disabled={IsInvalid} type="submit">
+              Sign In
+            </button>
+            <p>do you have an account? <Link to="/signin">Sign In Here</Link></p>
+          </form>
         </div>
-      </header>
-      <div className="sign-up-body">
-        <h1 className="sign-up-title">Unlimited movies, TV shows, and more</h1>
-        <p className="sign-up-text">Watch anywhere. Cancel anytime.</p>
-        <Form>
-          <h3 className="sign-up-subtitle">
-            Ready to watch? Enter your email to create or restart your
-            membership.
-          </h3>
-          <div className="sign-up-form">
-            <Form.Group controlId="formBasicEmail">
-              <Form.Control
-                className="sign-up-Input"
-                type="email"
-                placeholder="Enter email"
-              />
-            </Form.Group>
-            <Button className="sign-up-Button" variant="danger" type="submit">
-              Get Started
-            </Button>
-          </div>
-        </Form>
       </div>
-    </div>
+      <Footer />
+    </>
   );
 }
 
-export default SignUp;
+export default SignupPage;

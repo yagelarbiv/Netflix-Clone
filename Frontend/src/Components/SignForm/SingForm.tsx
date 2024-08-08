@@ -1,9 +1,13 @@
 import { FormEvent } from "react";
 import "./SignForm.css";
+import { Link } from "react-router-dom";
 
 type SetterFunction = (value: string) => void;
 type HandleSubmitFunction = (event: FormEvent<HTMLFormElement>) => void;
-type HandleSignupClickFunction = (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement, MouseEvent>, action: string) => Promise<void>;
+type HandleSignupClickFunction = (
+  e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  action: string
+) => void;
 interface SignFormProps {
   error: string;
   password: string;
@@ -48,6 +52,7 @@ const SignForm = ({
         <button className="Button" disabled={IsInvalid} type="submit">
           Sign In
         </button>
+        <p>do you have an account? <Link to="/signup">Sign Up Here</Link></p>
         <div className="AdminSignIn">
           <p className="AdminMessage">
             Welcome to my Netflix clone project. For your convenience, you can
