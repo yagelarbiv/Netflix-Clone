@@ -54,4 +54,15 @@ const logout = async (req, res) => {
   }
 };
 
-export { signin, logout, signup };
+const refreshToken = async (req, res) => {
+  const { id } = req.body;
+  const user = await User.findById(id);
+  if (user) {
+    generateToken(user._id, res);
+    res.send({ ...user._doc, password: "" });
+    return;
+  }
+  res.status(401).send({ message: "Invalid credentials" });
+}
+
+export { signin, logout, signup, refreshToken };
