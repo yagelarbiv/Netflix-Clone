@@ -2,7 +2,6 @@ import { useState } from "react";
 import Footer from "../components/shared/footer";
 import "./SignUp.css";
 import { Link, useNavigate } from "react-router-dom";
-// import { toast } from "react-toastify";
 import { getError } from "../utils";
 import { AxiosUsersInstance } from "../axios";
 import useUserStore, { UserStore } from "../Store/UserStore";

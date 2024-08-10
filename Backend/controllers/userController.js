@@ -4,6 +4,7 @@ import { generateToken } from "../utils.js";
 import {
   validateSignInRequest,
   validateSignUpRequest,
+  validateUpdateUserDataRequest,
 } from "../vallidations/Auth.js";
 
 const signin = async (req, res) => {
@@ -63,6 +64,35 @@ const refreshToken = async (req, res) => {
     return;
   }
   res.status(401).send({ message: "Invalid credentials" });
+};
+
+const updateUser = async (req, res) => {
+  const { id } = req.params;
+  const { name, email, password, isAdmin, profilePicture, myList } = req.body;
+  const errors = await validateUpdateUserDataRequest({
+    username: name,
+    email,
+    password,
+    isAdmin,
+    profilePicture,
+  });
+  if (Object.keys(errors).length > 0) {
+    res.status(400).send(errors);
+  } else {
+    const user = await User.findByIdAndUpdate(
+      id,
+      {
+        username: name,
+        email: email,
+        password: bcrypt.hashSync(password),
+        isAdmin: isAdmin,
+        profilePicture: profilePicture,
+        myList: myList,
+      },
+      { new: true }
+    );
+    res.send({ ...user._doc, password: "" });
+  }
 }
 
 export { signin, logout, signup, refreshToken };

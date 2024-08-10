@@ -11,4 +11,5 @@ searchRoutes.get("/person/:query", searchPerson);
 searchRoutes.get("/content/:type/:query", searchContent);
 searchRoutes.get('/:type/:genre', getContentByGenre);
 
+
 export default searchRoutes;
