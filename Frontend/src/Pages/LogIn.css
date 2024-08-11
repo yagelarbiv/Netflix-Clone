@@ -1,0 +1,47 @@
+.nav{
+  max-width: 1850px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 200px;
+  margin-right: auto;
+  margin-left: auto;
+  position: relative;
+}
+
+.OpacityLogin{
+  background: rgb(0 0 0 / 40%);
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+@media (max-width: 550px) {
+  .nav {
+    margin-bottom: 100px; 
+  }
+}
+
+.logo{
+  height: 60px;
+  width: 160px;
+  cursor: pointer;
+}
+
+.header{
+  position: relative;
+  display: flex;
+  background-size: cover;
+  min-height: 100vh;
+  min-width: 100vw;
+  background-image: url('../assets/netflix-bg.jpg');
+  flex-direction: column;
+}
+
+@media (max-width: 550px) {
+  .header{
+    padding: 15px 20px;
+  }
+}
