@@ -1,11 +1,10 @@
 import jwt from "jsonwebtoken";
 import { ENV_VARS } from "../config/envVars.js";
 import User from "../models/User.js";
-import { generateToken } from "../utils.js";
 
 export const protectRoute = async (req, res, next) => {
   try {
-    const token = req.cookie["JWT-Netflix"];
+    const token = req.headers.authorization.split(" ")[1];
     if (token) {
       const decode = jwt.verify(token, ENV_VARS.JWT_PW);
       if (!decode) {

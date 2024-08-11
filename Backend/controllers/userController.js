@@ -16,8 +16,8 @@ const signin = async (req, res) => {
     const user = await User.findOne({ email });
     if (user) {
       if (bcrypt.compareSync(password, user.password)) {
-        generateToken(user._id, res);
-        res.send({ ...user._doc, password: "" });
+        const token = generateToken(user._id, res);
+        res.send({ ...user._doc, password: "",token: token });
         return;
       }
     }
@@ -41,8 +41,8 @@ const signup = async (req, res) => {
       password: bcrypt.hashSync(password),
     });
     const user = await newUser.save();
-    generateToken(user._id, res);
-    res.status(201).send({ ...user._doc, password: "" });
+    const token = generateToken(user._id, res);
+    res.status(201).send({ ...user._doc, password: "",token: token });
   }
 };
 
@@ -67,22 +67,12 @@ const refreshToken = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const { id } = req.params;
-  const { name, email, password, isAdmin, profilePicture, myList } = req.body;
-  const errors = await validateUpdateUserDataRequest({
-    username: name,
-    email,
-    password,
-    isAdmin,
-    profilePicture,
-  });
-  if (Object.keys(errors).length > 0) {
-    res.status(400).send(errors);
-  } else {
+  const { _id, username, email, isAdmin, profilePicture, myList } = req.body.user;
+  console.log('Request data:', req.body.user);
     const user = await User.findByIdAndUpdate(
-      id,
+      _id,
       {
-        username: name,
+        username,
         email: email,
         password: bcrypt.hashSync(password),
         isAdmin: isAdmin,
@@ -92,7 +82,6 @@ const updateUser = async (req, res) => {
       { new: true }
     );
     res.send({ ...user._doc, password: "" });
-  }
 }
 
-export { signin, logout, signup, refreshToken };
+export { signin, logout, signup, refreshToken, updateUser };

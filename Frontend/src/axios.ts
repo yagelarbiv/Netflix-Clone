@@ -7,5 +7,18 @@ export const AxiosUsersInstance = axios.create({
 
 export const AxiosContentInstance = axios.create({
   baseURL: 'http://localhost:8080/api/v1/content',
-  headers: {'Authorization': `Bearer ${Cookie.get('token')}`}
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${Cookie.get('JWT-Netflix')}`
+  }
 });
+
+export const AxiosSearchInstance = axios.create({
+  baseURL: 'http://localhost:8080/api/v1/search',
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${Cookie.get('JWT-Netflix')}`
+  }
+})

@@ -40,28 +40,3 @@ export const validateSignInRequest = async (user) => {
   }
   return errors;
 };
-
-export const validateUpdateUserDataRequest = async (user) => {
-  const { username, email, password, isAdmin, profilePicture } = user;
-  const errors = {};
-  if (!username) {
-    errors.username = "Username is required";
-  }
-  if (!email) {
-    errors.email = "Email is required";
-  } else if (!/\S+@\S+\.\S+/.test(email)) {
-    errors.email = "Email address is invalid";
-  }
-  if (!password) {
-    errors.password = "Password is required"; 
-  } else if (password.length < 5) {
-    errors.password = "Password must be at least 5 characters";
-  }
-  if(isAdmin === undefined){
-    errors.isAdmin = "isAdmin is required";
-  }
-  if(!profilePicture){
-    errors.profilePicture = "profilePicture is required";
-  }
-  return errors;
-}
