@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+<<<<<<< HEAD
     "axios": "^1.7.3",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.427.0",
@@ -23,6 +24,12 @@
   "devDependencies": {
     "@eslint/js": "^9.8.0",
     "@types/js-cookie": "^3.0.6",
+=======
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+>>>>>>> 6f5aa610c32b51aeb438c2254b0dfe820be5318f
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
