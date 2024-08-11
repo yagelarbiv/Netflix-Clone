@@ -1,8 +1,7 @@
-body{
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: black;
-  color: white;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.hero-bg {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.1)), url("hero.png");
 }

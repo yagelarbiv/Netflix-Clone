@@ -1,6 +1,0 @@
-.AppBody {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh; /* This is likely what 'side-allPage' was intended to do */
-  min-width: 100%; /* Assuming 'min-width' was meant to be 100% */
-}

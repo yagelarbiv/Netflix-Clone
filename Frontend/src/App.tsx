@@ -1,19 +1,16 @@
-import "./App.css";
-import { BrowserRouter } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import Router from "./Routes";
+import { Route, Routes } from "react-router-dom"
+import HomePage from "./pages/home/HomePage"
+import LoginPage from "./pages/LoginPage"
+import SignUpPage from "./pages/SignUpPage"
 
 function App() {
   return (
-    <BrowserRouter>
-      <div className="AppBody">
-        <ToastContainer position="bottom-center" limit={1} />
-        <main>
-          <Router />
-        </main>
-      </div>
-    </BrowserRouter>
-  );
+    <Routes>
+      <Route path='/' element={<HomePage />} />
+      <Route path='/login' element={<LoginPage />} />
+      <Route path='/signup' element={<SignUpPage />} />
+    </Routes>
+  )
 }
 
-export default App;
+export default App
