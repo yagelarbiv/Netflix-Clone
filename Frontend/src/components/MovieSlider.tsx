@@ -9,7 +9,7 @@ import { AxiosError } from "axios";
 import useAuthStore from "../store/authUser";
 
 
-const MovieSlider = ({ category }: { category: string }) => {
+const MovieSlider = ({ category, contType = "empty" }: { category: string, contType: string }) => {
 	const { contentType } = useContentStore() as { contentType: string };
 	const [content, setContent] = useState([]);
 	const [showArrows, setShowArrows] = useState(false);
@@ -19,12 +19,12 @@ const MovieSlider = ({ category }: { category: string }) => {
 
 	const formattedCategoryName =
 		category.replaceAll("_", " ")[0].toUpperCase() + category.replaceAll("_", " ").slice(1);
-	const formattedContentType = contentType === "movie" ? "Movies" : "TV Shows";
+	const formattedContentType = (contType === "empty") ? ((contentType === "movie") ? ("Movie") : ("TV Show")) : contType;
 
 	useEffect(() => {
 		const getContent = async () => {
 			try {
-				const res = await AxiosContentInstance.get(`/${category}/${contentType}`,
+				const res = await AxiosContentInstance.get(`/${category}/${contType || contentType}`,
         {
           withCredentials: true,
           headers: {
@@ -50,7 +50,7 @@ const MovieSlider = ({ category }: { category: string }) => {
 		};
 
 		getContent();
-	}, [contentType, category]);
+	}, [contentType, category, token]);
 
 	const scrollLeft = () => {
 		if (sliderRef.current) {

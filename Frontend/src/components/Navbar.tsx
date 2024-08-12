@@ -55,10 +55,10 @@ const Navbar = () => {
 			{/* mobile navbar items */}
 			{isMobileMenuOpen && (
 				<div className='w-full sm:hidden mt-4 z-50 bg-black border rounded border-gray-800'>
-					<Link to='/home' className='hover:underline'>
+					<Link to='/home' className='block hover:underline p-2'>
 						Home
 					</Link>
-					<Link to='/newAndpopular' className='hover:underline'>
+					<Link to='/newAndpopular' className='block hover:underline p-2'>
 						new & popular
 					</Link>
 					<Link to={"/"} className='block hover:underline p-2' onClick={toggleMobileMenu}>
