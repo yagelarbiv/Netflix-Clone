@@ -4,7 +4,6 @@ import { generateToken } from "../utils.js";
 import {
   validateSignInRequest,
   validateSignUpRequest,
-  validateUpdateUserDataRequest,
 } from "../vallidations/Auth.js";
 
 const signin = async (req, res) => {

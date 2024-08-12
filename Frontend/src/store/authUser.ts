@@ -8,7 +8,9 @@ import { Movie, TvShow } from "../pages/home/HomeScreen";
 export interface User {
 	_id: '',
 	username: '',
+  email: '',
 	profilePicture: '',
+  isAdmin: false,
 	myList: (Movie | TvShow)[],
 }
 
@@ -26,7 +28,7 @@ interface AuthStore {
 }
 
 const useAuthStore = create<AuthStore>((set) => ({
-  user: null,
+  user: (Cookie.get("user") as unknown as User) ?? null,
   isSigningUp: false,
   isCheckingAuth: true,
   isLoggingOut: false,
@@ -36,7 +38,16 @@ const useAuthStore = create<AuthStore>((set) => ({
     try {
       const response = await AxiosUsersInstance.post("/signup", credentials);
       Cookie.set("JWT-Netflix", response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data));
+      const user: User = {
+        _id: response.data._id,
+        email: response.data.email,
+        username: response.data.username,
+        profilePicture: response.data.profilePicture,
+        isAdmin: response.data.isAdmin,
+        myList: response.data.myList,
+      };
+      Cookie.set("user", JSON.stringify(user));
+      localStorage.setItem("user", JSON.stringify(user));
       set({ user: response.data, isSigningUp: false });
       toast.success("Account created successfully");
     } catch (error: unknown) {
@@ -49,6 +60,15 @@ const useAuthStore = create<AuthStore>((set) => ({
     try {
       const response = await AxiosUsersInstance.post("/login", credentials);
       Cookie.set("JWT-Netflix", response.data.token);
+      const user = {
+        _id: response.data._id,
+        email: response.data.email,
+        username: response.data.username,
+        profilePicture: response.data.profilePicture,
+        isAdmin: response.data.isAdmin,
+        myList: response.data.myList,
+      };
+      Cookie.set("user", JSON.stringify(user));
       localStorage.setItem("user", JSON.stringify(response.data));
       set({ user: response.data, isLoggingIn: false });
     } catch (error: unknown) {
@@ -61,6 +81,7 @@ const useAuthStore = create<AuthStore>((set) => ({
     try {
       await AxiosUsersInstance.post("/logout");
       Cookie.remove("JWT-Netflix");
+      Cookie.remove("user");
       set({ user: null, isLoggingOut: false });
       toast.success("Logged out successfully");
     } catch (error: unknown) {
@@ -74,6 +95,15 @@ const useAuthStore = create<AuthStore>((set) => ({
       const response = await AxiosUsersInstance.post("/refresh"
       );
       Cookie.set("JWT-Netflix", response.data.token);
+      const user = {
+        _id: response.data._id,
+        email: response.data.email,
+        username: response.data.username,
+        profilePicture: response.data.profilePicture,
+        isAdmin: response.data.isAdmin,
+        myList: response.data.myList,
+      };
+      Cookie.set("user", JSON.stringify(user));
       set({ user: response.data, isCheckingAuth: false });
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
@@ -88,6 +118,7 @@ const useAuthStore = create<AuthStore>((set) => ({
         user
       });
       set({ user: response.data });
+      Cookie.set("user", response.data);
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       console.log(error);
