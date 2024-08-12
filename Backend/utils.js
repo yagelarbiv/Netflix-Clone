@@ -11,7 +11,7 @@ const generateToken = (_id, res) => {
       expiresIn: "7d",
     }
   );
-  res.cookie("JWT-Netflix", token, {
+  res.cookie("Jwt", token, {
     httpOnly: true,
     maxAge: 7 * 24 * 60 * 60 * 1000,
     sameSite: "strict",

@@ -4,15 +4,16 @@ import { Link } from "react-router-dom";
 import { SMALL_IMG_BASE_URL } from "../utils/constants";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Movie, TvShow } from "../pages/home/HomeScreen";
-import Cookie from 'js-cookie';
 import { AxiosContentInstance } from "../axios";
 import { AxiosError } from "axios";
+import useAuthStore from "../store/authUser";
 
 
 const MovieSlider = ({ category }: { category: string }) => {
 	const { contentType } = useContentStore() as { contentType: string };
 	const [content, setContent] = useState([]);
 	const [showArrows, setShowArrows] = useState(false);
+	const { token } = useAuthStore() as { token: string };
 
 	const sliderRef = useRef<HTMLDivElement>(null);
 
@@ -28,7 +29,7 @@ const MovieSlider = ({ category }: { category: string }) => {
           withCredentials: true,
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${Cookie.get('JWT-Netflix')}`
+            'Authorization': `Bearer ${token}`
           }
         }
       );

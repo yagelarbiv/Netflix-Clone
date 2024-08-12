@@ -4,6 +4,7 @@ import User from "../models/User.js";
 
 export const protectRoute = async (req, res, next) => {
   try {
+    console.log(req.headers.authorization)
     const token = req.headers.authorization.split(" ")[1];
     if (token) {
       const decode = jwt.verify(token, ENV_VARS.JWT_PW);

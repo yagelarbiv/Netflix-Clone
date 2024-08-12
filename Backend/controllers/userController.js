@@ -10,14 +10,15 @@ const signin = async (req, res) => {
   const { email, password } = req.body;
   const errors = await validateSignInRequest({ email, password });
   if (Object.keys(errors).length > 0) {
+    console.log(errors);
     res.status(400).send(errors);
   } else {
     const user = await User.findOne({ email });
     if (user) {
+      console.log(user.password);
       if (bcrypt.compareSync(password, user.password)) {
         const token = generateToken(user._id, res);
         res.send({ ...user._doc, password: "",token: token });
-        return;
       }
     }
     res.status(401).send({ message: "Invalid credentials" });
@@ -25,9 +26,10 @@ const signin = async (req, res) => {
 };
 
 const signup = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { username, email, password } = req.body;
+  console.log(username, email, password);
   const errors = await validateSignUpRequest({
-    username: name,
+    username,
     email,
     password,
   });
@@ -35,21 +37,24 @@ const signup = async (req, res) => {
     res.status(400).send(errors);
   } else {
     const newUser = new User({
-      username: name,
-      email: email,
+      username,
+      email,
       password: bcrypt.hashSync(password),
     });
+    console.log(newUser);
     const user = await newUser.save();
     const token = generateToken(user._id, res);
     res.status(201).send({ ...user._doc, password: "",token: token });
   }
 };
 
-const logout = async (req, res) => {e
+const logout = async (req, res) => {
   try {
-    res.clearCookie("JWT-Netflix");
+    console.log("res")
+    res.clearCookie("Jwt");
     res.send({ message: "Logged out successfully" });
   } catch (error) {
+    console.log(`error: ${error}`);
     res.status(500).send({ success: false, message: "Failed to log out" });
   }
 };

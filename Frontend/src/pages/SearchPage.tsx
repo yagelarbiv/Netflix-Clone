@@ -7,6 +7,7 @@ import { AxiosError } from "axios";
 import { ORIGINAL_IMG_BASE_URL } from "../utils/constants";
 import { Link } from "react-router-dom";
 import { AxiosSearchInstance } from "../axios";
+import useAuthStore from "../store/authUser";
 
 interface Result {
   poster_path: string;
@@ -22,6 +23,7 @@ const SearchPage = () => {
 
 	const [results, setResults] = useState<Result[]>([]);
 	const { contentType, setContentType } = useContentStore() as { contentType: string, setContentType: (type: string) => void };
+	const { token } = useAuthStore() as { token: string };
 
 	const handleTabClick = (tab: string) => {
 		setActiveTab(tab);
@@ -36,9 +38,13 @@ const SearchPage = () => {
 	const handleSearch = async (e: React.FormEvent) => {
 		e.preventDefault();
 		try {
-			const res = await AxiosSearchInstance.get(`/${contentType}/${activeTab}/${searchTerm}`);
-      console.log(`/${contentType}/${activeTab}/${searchTerm}`)
-      console.log(res.data);
+			const res = await AxiosSearchInstance.get(`/content/${contentType}/${searchTerm}`,{
+				withCredentials: true,
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${token}`
+				}
+			});
 			setResults(res.data.content);
 		} catch (error: unknown) {
 			if (error instanceof AxiosError) {
@@ -115,7 +121,7 @@ const SearchPage = () => {
 									</div>
 								) : (
 									<Link
-										to={"/watch/" + result.id}
+										to={`/watch/${result.id}`}
 										onClick={() => {
 											setContentType(activeTab);
 										}}

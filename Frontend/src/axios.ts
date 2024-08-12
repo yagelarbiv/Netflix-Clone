@@ -3,6 +3,7 @@ import Cookie from 'js-cookie';
 
 export const AxiosUsersInstance = axios.create({
   baseURL: 'http://localhost:8080/api/v1/users',
+  withCredentials: true,
 });
 
 export const AxiosContentInstance = axios.create({
@@ -10,7 +11,7 @@ export const AxiosContentInstance = axios.create({
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
-    'authorization': `Bearer ${Cookie.get('JWT-Netflix')}`
+    'authorization': `Bearer ${Cookie.get('Jwt')}`
   }
 });
 
@@ -19,6 +20,6 @@ export const AxiosSearchInstance = axios.create({
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${Cookie.get('JWT-Netflix')}`
+    'Authorization': `Bearer ${Cookie.get('Jwt')}`
   }
 })

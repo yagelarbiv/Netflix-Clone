@@ -27,9 +27,10 @@ const WatchPage = () => {
   const [seasonDetails, setSeasonDetails] = useState<Season>();
   const [similarContent, setSimilarContent] = useState([]);
   const { contentType } = useContentStore() as { contentType: string };
-  const { user, update } = useAuthStore() as {
+  const { user, update, token } = useAuthStore() as {
     user: User;
     update: (user: User) => Promise<void>;
+    token: string;
   };
   const sliderRef = useRef<HTMLDivElement>(null);
 
@@ -37,7 +38,13 @@ const WatchPage = () => {
     const getTrailers = async () => {
       try {
         const res = await AxiosContentInstance.get(
-          `/${id}/trailers/${contentType}/`
+          `/${id}/trailers/${contentType}/`,{
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setTrailers(res.data.content);
       } catch (error) {
@@ -57,13 +64,20 @@ const WatchPage = () => {
     };
 
     getTrailers();
-  }, [contentType, id]);
+  }, [contentType, id, token]);
 
   useEffect(() => {
     const getSimilarContent = async () => {
       try {
         const res = await AxiosContentInstance.get(
-          `${id}/similar/${contentType}`
+          `${id}/similar/${contentType}`,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setSimilarContent(res.data.content);
       } catch (error) {
@@ -76,13 +90,20 @@ const WatchPage = () => {
     };
 
     getSimilarContent();
-  }, [contentType, id]);
+  }, [contentType, id, token]);
 
   useEffect(() => {
     const getContentDetails = async () => {
       try {
         const res = await AxiosContentInstance.get(
-          `${id}/details/${contentType}`
+          `${id}/details/${contentType}`,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setContent(res.data.content);
       } catch (error) {
@@ -95,19 +116,25 @@ const WatchPage = () => {
     };
 
     getContentDetails();
-  }, [contentType, id]);
+  }, [contentType, id, token]);
 
   useEffect(() => {
     const getSeasonDetails = async () => {
       if (content && Object.keys(content).includes("number_of_seasons")) {
         const res = await AxiosContentInstance.get(
-          `${id}/season/${season === 0 ? 1 : season}`
+          `${id}/season/${season === 0 ? 1 : season}`,{
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setSeasonDetails(res.data.content);
       }
     };
     getSeasonDetails();
-  }, [content, id, season]);
+  }, [content, id, season, token]);
 
   const handleNext = () => {
     if (currentTrailerIdx < trailers.length - 1)
