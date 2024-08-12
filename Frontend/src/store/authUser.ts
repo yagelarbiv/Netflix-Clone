@@ -92,8 +92,10 @@ const useAuthStore = create<AuthStore>((set) => ({
   authCheck: async () => {
     set({ isCheckingAuth: true });
     try {
-      const response = await AxiosUsersInstance.post("/refresh"
-      );
+      const UserCookie = JSON.parse(Cookie.get("user")?.toString() || "{}");
+      const response = await AxiosUsersInstance.post("/refresh", {
+        id: UserCookie._id,
+      });
       Cookie.set("JWT-Netflix", response.data.token);
       const user = {
         _id: response.data._id,
@@ -114,14 +116,16 @@ const useAuthStore = create<AuthStore>((set) => ({
   },
   update: async (user: User) => {
     try {
+      Cookie.set("user", JSON.stringify(user));
       const response = await AxiosUsersInstance.post("/update", {
         user
       });
+      console.log(response.data);
       set({ user: response.data });
-      Cookie.set("user", response.data);
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
-      console.log(error);
+      console.log("Error updating user:", axiosError);
+      console.log("Response data:", axiosError.response?.data);
       toast.error((axiosError.response?.data as { message: string }).message || "update failed");
     }
   },

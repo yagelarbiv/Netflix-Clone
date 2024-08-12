@@ -10,7 +10,7 @@ export const AxiosContentInstance = axios.create({
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${Cookie.get('JWT-Netflix')}`
+    'authorization': `Bearer ${Cookie.get('JWT-Netflix')}`
   }
 });
 

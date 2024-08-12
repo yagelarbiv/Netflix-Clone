@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useContentStore } from "../store/content";
 import { Movie, TvShow } from "../pages/home/HomeScreen";
 import { AxiosContentInstance } from "../axios";
+import Cookie from 'js-cookie';
 
 const useGetTrendingContent = () => {
 	const [trendingContent, setTrendingContent] = useState<Movie | TvShow>();
@@ -9,8 +10,9 @@ const useGetTrendingContent = () => {
 
 	useEffect(() => {
 		const getTrendingContent = async () => {
-			const res = await AxiosContentInstance.get(`trending/${contentType}`,
-			);
+			const token = Cookie.get('JWT-Netflix')?.toString();
+			console.log(token);
+			const res = await AxiosContentInstance.get(`trending/${contentType}`);
 			setTrendingContent(res.data.content);
 		};
 

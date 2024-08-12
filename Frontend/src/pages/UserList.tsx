@@ -4,30 +4,18 @@ import { SMALL_IMG_BASE_URL } from "../utils/constants";
 import { Trash } from "lucide-react";
 import useAuthStore, { User } from "../store/authUser";
 import { Movie, TvShow } from "./home/HomeScreen";
-
-function formatDate(dateString: string) {
-	// Create a Date object from the input date string
-	const date = new Date(dateString);
-
-	const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-	// Extract the month, day, and year from the Date object
-	const month = monthNames[date.getUTCMonth()];
-	const day = date.getUTCDate();
-	const year = date.getUTCFullYear();
-
-	// Return the formatted date string
-	return `${month} ${day}, ${year}`;
-}
+import { Link } from "react-router-dom";
 
 const UserList = () => {
-  const [myList, setMyList] = useState<(Movie | TvShow)[]>([]);
   const { user, update } = useAuthStore() as { user: User, update: (user: User) => Promise<void> };
+  const [myList, setMyList] = useState<(Movie | TvShow)[]>(user.myList);
 
 
 	const handleDelete = (content: Movie | TvShow) => {
-			setMyList(user?.myList.filter((entry: Movie | TvShow) => entry.id !== content.id));
-      update({ ...user, myList: user.myList.filter((entry: Movie | TvShow) => entry.id !== content.id) });
+		if(myList.includes(content)) {
+			setMyList([...myList.filter((item) => item.id !== content.id)]);
+			update({ ...user, myList: myList });
+		}
 	};
 
 	if (myList?.length === 0) {
@@ -53,14 +41,16 @@ const UserList = () => {
 				<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3  gap-4'>
 					{myList?.map((entry: Movie | TvShow) => (
 						<div key={entry.id} className='bg-gray-800 p-4 rounded flex items-start'>
-							<img
-								src={SMALL_IMG_BASE_URL + (entry as Movie).poster_path}
-								alt='History image'
-								className='size-16 rounded-full object-cover mr-4'
-							/>
+							<Link to={`/watch/${entry.id}`} className='w-16 h-16 mr-4'>
+								<img
+									src={SMALL_IMG_BASE_URL + (entry as Movie).poster_path}
+									alt='History image'
+									className='size-16 rounded-full object-cover mr-4'
+								/>
+							</Link>
 							<div className='flex flex-col'>
-								<span className='text-white text-lg'>{(entry as Movie).title}</span>
-								<span className='text-gray-400 text-sm'>{formatDate((entry as Movie).release_date)}</span>
+								<span className='text-white text-lg'>{(entry as Movie).title || (entry as TvShow).name}</span>
+								<span className='text-gray-400 text-sm'>{(entry as Movie).release_date || (entry as TvShow).first_air_date}</span>
 							</div>
 
 							<span

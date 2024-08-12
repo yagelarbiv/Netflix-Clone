@@ -58,6 +58,7 @@ export const getContentByCategory = async (req, res) => {
 
 export const getSeasonDetails = async (req, res) => {
   const { id, seasonNumber } = req.params;
+  console.log(id, seasonNumber);
   try {
     const { data } = await fetchFromTMDB(`https://api.themoviedb.org/3/tv/${id}/season/${seasonNumber}?language=en-US`);
     res.status(200).send({ content: data });

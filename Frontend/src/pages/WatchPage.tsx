@@ -9,7 +9,7 @@ import { ORIGINAL_IMG_BASE_URL, SMALL_IMG_BASE_URL } from "../utils/constants";
 import { formatReleaseDate } from "../utils/dateFunction";
 import WatchPageSkeleton from "../components/skeletons/WatchPageSkeleton";
 import toast from "react-hot-toast";
-import { Movie, TvShow } from "./home/HomeScreen";
+import { Movie, Season, TvShow } from "./home/HomeScreen";
 import { AxiosContentInstance } from "../axios";
 import useAuthStore, { User } from "../store/authUser";
 
@@ -17,28 +17,35 @@ interface Trailer {
   key: string;
 }
 
-
 const WatchPage = () => {
-	const { id } = useParams();
-	const [trailers, setTrailers] = useState<Trailer[]>([]);
-	const [currentTrailerIdx, setCurrentTrailerIdx] = useState(0);
-	const [loading, setLoading] = useState(true);
-	const [content, setContent] = useState<Movie | TvShow>();
-	const [similarContent, setSimilarContent] = useState([]);
-	const { contentType } = useContentStore() as { contentType: string };
-	const { user, update } = useAuthStore() as { user: User, update: (user: User) => Promise<void> };
+  const { id } = useParams();
+  const [trailers, setTrailers] = useState<Trailer[]>([]);
+  const [currentTrailerIdx, setCurrentTrailerIdx] = useState(0);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [content, setContent] = useState<Movie | TvShow>();
+  const [season, setSeason] = useState<number>(0);
+  const [seasonDetails, setSeasonDetails] = useState<Season>();
+  const [similarContent, setSimilarContent] = useState([]);
+  const { contentType } = useContentStore() as { contentType: string };
+  const { user, update } = useAuthStore() as {
+    user: User;
+    update: (user: User) => Promise<void>;
+  };
+  const sliderRef = useRef<HTMLDivElement>(null);
 
-	const sliderRef = useRef<HTMLDivElement>(null);
-
-	useEffect(() => {
-		const getTrailers = async () => {
-			try {
-				const res = await AxiosContentInstance.get(`/${id}/trailers/${contentType}/`);
-				setTrailers(res.data.content);
-			} catch (error) {
-				if (error instanceof AxiosError) {
+  useEffect(() => {
+    const getTrailers = async () => {
+      try {
+        const res = await AxiosContentInstance.get(
+          `/${id}/trailers/${contentType}/`
+        );
+        setTrailers(res.data.content);
+      } catch (error) {
+        if (error instanceof AxiosError) {
           if (error.response?.status === 404) {
-            toast.error("Nothing found, make sure you are searching under the right category");
+            toast.error(
+              "Nothing found, make sure you are searching under the right category"
+            );
           } else {
             toast.error("An error occurred, please try again later");
           }
@@ -46,215 +53,310 @@ const WatchPage = () => {
           console.error(error);
           toast.error("An unknown error occurred");
         }
-			}
-		};
+      }
+    };
 
-		getTrailers();
-	}, [contentType, id]);
+    getTrailers();
+  }, [contentType, id]);
 
-	useEffect(() => {
-		const getSimilarContent = async () => {
-			try {
-				const res = await AxiosContentInstance.get(`${id}/similar/${contentType}`);
-				setSimilarContent(res.data.content);
-			} catch (error) {
-				if (error instanceof AxiosError) {
+  useEffect(() => {
+    const getSimilarContent = async () => {
+      try {
+        const res = await AxiosContentInstance.get(
+          `${id}/similar/${contentType}`
+        );
+        setSimilarContent(res.data.content);
+      } catch (error) {
+        if (error instanceof AxiosError) {
           if (error.response?.status === 404) {
             setSimilarContent([]);
           }
         }
-			}
-		};
+      }
+    };
 
-		getSimilarContent();
-	}, [contentType, id]);
+    getSimilarContent();
+  }, [contentType, id]);
 
-	useEffect(() => {
-		const getContentDetails = async () => {
-			try {
-				const res = await AxiosContentInstance.get(`${id}/details/${contentType}`);
-				setContent(res.data.content);
-			} catch (error) {
-				if (error instanceof Error && error.message.includes("404")) {
+  useEffect(() => {
+    const getContentDetails = async () => {
+      try {
+        const res = await AxiosContentInstance.get(
+          `${id}/details/${contentType}`
+        );
+        setContent(res.data.content);
+      } catch (error) {
+        if (error instanceof Error && error.message.includes("404")) {
           setContent({} as Movie | TvShow);
         }
-			} finally {
-				setLoading(false);
-			}
-		};
+      } finally {
+        setLoading(false);
+      }
+    };
 
-		getContentDetails();
-	}, [contentType, id]);
+    getContentDetails();
+  }, [contentType, id]);
 
-	const handleNext = () => {
-		if (currentTrailerIdx < trailers.length - 1) setCurrentTrailerIdx(currentTrailerIdx + 1);
-	};
-	const handlePrev = () => {
-		if (currentTrailerIdx > 0) setCurrentTrailerIdx(currentTrailerIdx - 1);
-	};
+  useEffect(() => {
+    const getSeasonDetails = async () => {
+      if (content && Object.keys(content).includes("number_of_seasons")) {
+        const res = await AxiosContentInstance.get(
+          `${id}/season/${season === 0 ? 1 : season}`
+        );
+        setSeasonDetails(res.data.content);
+      }
+    };
+    getSeasonDetails();
+  }, [content, id, season]);
 
-	const addToWatchList = async () => {
-		if (!user || !content) {
-			return;
-		}
-		try {
-			if (user.myList.includes(content)) {
-				toast.error("Already added to watch list");
-			} else {
-				update(user);
-				user.myList.push(content);
-				toast.success("Added to watch list");
-			}
-		} catch (error) {
-			if (error instanceof Error && error.message.includes("404")) {
-				console.log(error);
-			}
-		}
-	}
+  const handleNext = () => {
+    if (currentTrailerIdx < trailers.length - 1)
+      setCurrentTrailerIdx(currentTrailerIdx + 1);
+  };
+  const handlePrev = () => {
+    if (currentTrailerIdx > 0) setCurrentTrailerIdx(currentTrailerIdx - 1);
+  };
 
-	const scrollLeft = () => {
-		if (sliderRef.current) sliderRef.current.scrollBy({ left: -sliderRef.current.offsetWidth, behavior: "smooth" });
-	};
-	const scrollRight = () => {
-		if (sliderRef.current) sliderRef.current.scrollBy({ left: sliderRef.current.offsetWidth, behavior: "smooth" });
-	};
+  const addToWatchList = async () => {
+    if (!user || !content) {
+      return;
+    }
+    try {
+      if (user.myList.includes(content)) {
+        toast.error("Already added to watch list");
+      } else {
+        user.myList.push(content);
+        update(user);
+        toast.success("Added to watch list");
+      }
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("404")) {
+        console.log(error);
+      }
+    }
+  };
 
-	if (loading)
-		return (
-			<div className='min-h-screen bg-black p-10'>
-				<WatchPageSkeleton />
-			</div>
-		);
+  const scrollLeft = () => {
+    if (sliderRef.current)
+      sliderRef.current.scrollBy({
+        left: -sliderRef.current.offsetWidth,
+        behavior: "smooth",
+      });
+  };
+  const scrollRight = () => {
+    if (sliderRef.current)
+      sliderRef.current.scrollBy({
+        left: sliderRef.current.offsetWidth,
+        behavior: "smooth",
+      });
+  };
 
-	if (!content) {
-		return (
-			<div className='bg-black text-white h-screen'>
-				<div className='max-w-6xl mx-auto'>
-					<Navbar />
-					<div className='text-center mx-auto px-4 py-8 h-full mt-40'>
-						<h2 className='text-2xl sm:text-5xl font-bold text-balance'>Content not found 😥</h2>
-					</div>
-				</div>
-			</div>
-		);
-	}
+  if (loading)
+    return (
+      <div className="min-h-screen bg-black p-10">
+        <WatchPageSkeleton />
+      </div>
+    );
 
-	return (
-		<div className='bg-black min-h-screen text-white'>
-			<div className='mx-auto container px-4 py-8 h-full'>
-				<Navbar />
+  if (!content) {
+    return (
+      <div className="bg-black text-white h-screen">
+        <div className="max-w-6xl mx-auto">
+          <Navbar />
+          <div className="text-center mx-auto px-4 py-8 h-full mt-40">
+            <h2 className="text-2xl sm:text-5xl font-bold text-balance">
+              Content not found 😥
+            </h2>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-				{trailers.length > 0 && (
-					<div className='flex justify-between items-center mb-4'>
-						<button
-            title="Previous trailer"
-							className={`
+  return (
+    <div className="bg-black min-h-screen text-white">
+      <div className="mx-auto container px-4 py-8 h-full">
+        <Navbar />
+
+        {trailers.length > 0 && (
+          <div className="flex justify-between items-center mb-4">
+            <button
+              title="Previous trailer"
+              className={`
 							bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded ${
-								currentTrailerIdx === 0 ? "opacity-50 cursor-not-allowed " : ""
-							}}
+                currentTrailerIdx === 0 ? "opacity-50 cursor-not-allowed " : ""
+              }}
 							`}
-							disabled={currentTrailerIdx === 0}
-							onClick={handlePrev}
-						>
-							<ChevronLeft size={24} />
-						</button>
+              disabled={currentTrailerIdx === 0}
+              onClick={handlePrev}
+            >
+              <ChevronLeft size={24} />
+            </button>
 
-						<button
+            <button
               title="Next trailer"
-							className={`
+              className={`
 							bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded ${
-								currentTrailerIdx === trailers.length - 1 ? "opacity-50 cursor-not-allowed " : ""
-							}}
+                currentTrailerIdx === trailers.length - 1
+                  ? "opacity-50 cursor-not-allowed "
+                  : ""
+              }}
 							`}
-							disabled={currentTrailerIdx === trailers.length - 1}
-							onClick={handleNext}
-						>
-							<ChevronRight size={24} />
-						</button>
-					</div>
-				)}
+              disabled={currentTrailerIdx === trailers.length - 1}
+              onClick={handleNext}
+            >
+              <ChevronRight size={24} />
+            </button>
+          </div>
+        )}
 
-				<div className='aspect-video mb-8 p-2 sm:px-10 md:px-32'>
-					{trailers.length > 0 && (
-						<ReactPlayer
-							controls={true}
-							width={"100%"}
-							height={"70vh"}
-							className='mx-auto overflow-hidden rounded-lg'
-							url={`https://www.youtube.com/watch?v=${trailers[currentTrailerIdx].key}`}
-						/>
-					)}
+        <div className="aspect-video mb-8 p-2 sm:px-10 md:px-32">
+          {trailers.length > 0 && (
+            <ReactPlayer
+              controls={true}
+              width={"100%"}
+              height={"70vh"}
+              className="mx-auto overflow-hidden rounded-lg"
+              url={`https://www.youtube.com/watch?v=${trailers[currentTrailerIdx].key}`}
+            />
+          )}
 
-					{trailers?.length === 0 && (
-						<h2 className='text-xl text-center mt-5'>
-							No trailers available for{" "}
-							<span className='font-bold text-red-600'>{(content as Movie)?.title || (content as TvShow)?.name}</span> 😥
-						</h2>
-					)}
-				</div>
+          {trailers?.length === 0 && (
+            <h2 className="text-xl text-center mt-5">
+              No trailers available for{" "}
+              <span className="font-bold text-red-600">
+                {(content as Movie)?.title || (content as TvShow)?.name}
+              </span>{" "}
+              😥
+            </h2>
+          )}
+        </div>
 
-				{/* movie details */}
-				<div
-					className='flex flex-col md:flex-row items-center justify-between gap-20 
-				max-w-6xl mx-auto'
-				>
-					<div className='mb-4 md:mb-0'>
-						<h2 className='text-5xl font-bold text-balance'>{(content as Movie)?.title || (content as TvShow)?.name}</h2>
+        {/* movie details */}
+        <div
+          className="flex flex-col md:flex-row items-center justify-between gap-10 
+				max-w-6xl mx-auto"
+        >
+          <div className="mb-2 md:mb-0">
+            <h2 className="text-5xl font-bold text-balance">
+              {(content as Movie)?.title || (content as TvShow)?.name}
+            </h2>
 
-						<p className='mt-2 text-lg'>
-							{formatReleaseDate((content as Movie)?.release_date || (content as TvShow)?.first_air_date)} |{" "}
-							{(content as Movie)?.adult ? (
-								<span className='text-red-600'>18+</span>
-							) : (
-								<span className='text-green-600'>PG-13</span>
-							)}{" "}
-						</p>
-						<p className='mt-4 text-lg'>{(content as Movie)?.overview}</p>
-						<button className='bg-red-600 text-white py-2 px-4 rounded mt-4' onClick={addToWatchList}>{user?.myList.includes(content) ? "Remove from My List" : "Add to My List"}</button>
-					</div>
-					<img
-						src={ORIGINAL_IMG_BASE_URL + (content as Movie)?.poster_path}
-						alt='Poster image'
-						className='max-h-[600px] rounded-md'
-					/>
-				</div>
+            <p className="mt-2 text-lg">
+              {formatReleaseDate(
+                (content as Movie)?.release_date ||
+                  (content as TvShow)?.first_air_date
+              )}{" "}
+              |{" "}
+              {(content as Movie)?.adult ? (
+                <span className="text-red-600">18+</span>
+              ) : (
+                <span className="text-green-600">PG-13</span>
+              )}{" "}
+            </p>
+            <p className="mt-4 text-lg">{(content as Movie)?.overview}</p>
+            <button
+              className="bg-red-600 text-white py-2 px-4 rounded mt-4"
+              onClick={addToWatchList}
+            >
+              {user?.myList.includes(content)
+                ? "Remove from My List"
+                : "Add to My List"}
+            </button>
+          </div>
+          <img
+            src={ORIGINAL_IMG_BASE_URL + (content as Movie)?.poster_path}
+            alt="Poster image"
+            className="max-h-[600px] rounded-md"
+          />
+        </div>
+        <div>
+          {Object.keys(content).includes("number_of_seasons") ? (
+            <select
+              title="Select Season"
+              value={season}
+              onChange={(e) => setSeason(Number(e.target.value))}
+              className="bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded mt-4"
+            >
+              {Array.from(
+                { length: (content as TvShow).number_of_seasons },
+                (_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    season {i + 1}
+                  </option>
+                )
+              )}
+            </select>
+          ) : null}
 
-				{similarContent.length > 0 && (
-					<div className='mt-12 max-w-5xl mx-auto relative'>
-						<h3 className='text-3xl font-bold mb-4'>Similar Movies/Tv Show</h3>
+          {Object.keys(content).includes("number_of_episodes") ? (
+            <div>
+              {seasonDetails?.episodes.map((episode) => (
+                <div
+                  key={episode.id}
+                  className="mt-4 text-lg border-gray-500/70 hover:bg-gray-500 p-2"
+                >
+                  <p className="font-bold">
+                    {episode.episode_number}. {episode.name}
+                  </p>
+                  <p className="mt-2">{episode.overview}</p>
+                  <p>Air Date: {episode.air_date}</p>
+                  <p>Crew: {episode?.crew?.map((c) => c.name).join(", ")}</p>
+                  <p>
+                    Guest Stars:{" "}
+                    {episode?.guest_stars?.map((c) => c.name).join(", ")}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </div>
 
-						<div className='flex overflow-x-scroll scrollbar-hide gap-4 pb-4 group' ref={sliderRef}>
-							{similarContent.map((content) => {
-								if ((content as Movie).poster_path === null) return null;
-								return (
-									<Link key={(content as Movie).id} to={`/watch/${(content as Movie).id}`} className='w-52 flex-none'>
-										<img
-											src={SMALL_IMG_BASE_URL + (content as Movie).poster_path}
-											alt='Poster path'
-											className='w-full h-auto rounded-md'
-										/>
-										<h4 className='mt-2 text-lg font-semibold'>{(content as Movie).title || (content as TvShow).name}</h4>
-									</Link>
-								);
-							})}
+        {similarContent.length > 0 && (
+          <div className="mt-12 max-w-5xl mx-auto relative">
+            <h3 className="text-3xl font-bold mb-4">Similar Movies/Tv Show</h3>
 
-							<ChevronRight
-								className='absolute top-1/2 -translate-y-1/2 right-2 w-8 h-8
+            <div
+              className="flex overflow-x-scroll scrollbar-hide gap-4 pb-4 group"
+              ref={sliderRef}
+            >
+              {similarContent.map((content) => {
+                if ((content as Movie).poster_path === null) return null;
+                return (
+                  <Link
+                    key={(content as Movie).id}
+                    to={`/watch/${(content as Movie).id}`}
+                    className="w-52 flex-none"
+                  >
+                    <img
+                      src={SMALL_IMG_BASE_URL + (content as Movie).poster_path}
+                      alt="Poster path"
+                      className="w-full h-auto rounded-md"
+                    />
+                    <h4 className="mt-2 text-lg font-semibold">
+                      {(content as Movie).title || (content as TvShow).name}
+                    </h4>
+                  </Link>
+                );
+              })}
+
+              <ChevronRight
+                className="absolute top-1/2 -translate-y-1/2 right-2 w-8 h-8
 										opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer
-										  bg-red-600 text-white rounded-full'
-								onClick={scrollRight}
-							/>
-							<ChevronLeft
-								className='absolute top-1/2 -translate-y-1/2 left-2 w-8 h-8 opacity-0 
+										  bg-red-600 text-white rounded-full"
+                onClick={scrollRight}
+              />
+              <ChevronLeft
+                className="absolute top-1/2 -translate-y-1/2 left-2 w-8 h-8 opacity-0 
 								group-hover:opacity-100 transition-all duration-300 cursor-pointer bg-red-600 
-								text-white rounded-full'
-								onClick={scrollLeft}
-							/>
-						</div>
-					</div>
-				)}
-			</div>
-		</div>
-	);
+								text-white rounded-full"
+                onClick={scrollLeft}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 export default WatchPage;

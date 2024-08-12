@@ -45,7 +45,7 @@ const signup = async (req, res) => {
   }
 };
 
-const logout = async (req, res) => {
+const logout = async (req, res) => {e
   try {
     res.clearCookie("JWT-Netflix");
     res.send({ message: "Logged out successfully" });
@@ -55,11 +55,12 @@ const logout = async (req, res) => {
 };
 
 const refreshToken = async (req, res) => {
+  console.log(req.body)
   const { id } = req.body;
   const user = await User.findById(id);
   if (user) {
-    generateToken(user._id, res);
-    res.send({ ...user._doc, password: "" });
+    const token = generateToken(user._id, res);
+    res.send({ ...user._doc, password: "", token: token });
     return;
   }
   res.status(401).send({ message: "Invalid credentials" });
@@ -67,19 +68,19 @@ const refreshToken = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const { _id, username, email, isAdmin, profilePicture, myList } = req.body.user;
-  console.log('Request data:', req.body.user);
     const user = await User.findByIdAndUpdate(
       _id,
       {
         username,
         email: email,
-        password: bcrypt.hashSync(password),
         isAdmin: isAdmin,
         profilePicture: profilePicture,
         myList: myList,
       },
       { new: true }
     );
+    console.log(user.myList);
+    await user.save();
     res.send({ ...user._doc, password: "" });
 }
 

@@ -17,7 +17,7 @@ function App() {
 
 	useEffect(() => {
 		authCheck();
-	}, [authCheck, user]);
+	}, []);
 
 	if (isCheckingAuth) {
 		return (

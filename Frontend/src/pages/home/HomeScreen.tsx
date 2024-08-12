@@ -25,21 +25,110 @@ export interface Movie {
 }
 
 export interface TvShow {
+  adult: boolean;
   backdrop_path: string;
+  created_by: { [key: string]: unknown }[];
+  episode_run_time: number[];
+  first_air_date: string;
+  genres: { [key: string]: unknown }[];
+  homepage: string;
   id: number;
+  in_production: boolean;
+  languages: string[];
+  last_air_date: string;
+  last_episode_to_air: {
+    id: number;
+    name: string;
+    overview: string;
+    vote_average: number;
+    vote_count: number;
+    [key: string]: unknown;
+  };
   name: string;
+  networks: { [key: string]: unknown }[];
+  next_episode_to_air: null | {
+    id: number;
+    name: string;
+    overview: string;
+    vote_average: number;
+    vote_count: number;
+    [key: string]: unknown;
+  };
+  number_of_episodes: number;
+  number_of_seasons: number;
+  origin_country: string[];
+  original_language: string;
   original_name: string;
   overview: string;
-  poster_path: string;
-  media_type: string;
-  adult: boolean;
-  original_language: string;
-  genre_ids: number[];
   popularity: number;
-  first_air_date: string;
+  poster_path: string;
+  production_companies: { [key: string]: unknown }[];
+  production_countries: { [key: string]: unknown }[];
+  seasons: { [key: string]: unknown }[];
+  spoken_languages: { [key: string]: unknown }[];
+  status: string;
+  tagline: string;
+  type: string;
   vote_average: number;
   vote_count: number;
-  origin_country: string[];
+}
+
+export interface GuestStar {
+  character: string;
+  credit_id: string;
+  order: number;
+  adult: boolean;
+  gender: number;
+  id: number;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: string;
+}
+
+export interface Crew {
+  department: string;
+  job: string;
+  credit_id: string;
+  adult: boolean;
+  gender: number;
+  id: number;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: string;
+}
+
+export interface Episode {
+  air_date: string;
+  episode_number: number;
+  episode_type: string;
+  id: number;
+  name: string;
+  overview: string;
+  production_code: string;
+  runtime: number;
+  season_number: number;
+  show_id: number;
+  still_path: string;
+  vote_average: number;
+  vote_count: number;
+  crew: Crew[];
+  guest_stars: GuestStar[];
+}
+
+export interface Season {
+  _id: string;
+  air_date: string;
+  episodes: Episode[];
+  name: string;
+  overview: string;
+  id: number;
+  poster_path: string;
+  season_number: number;
+  vote_average: number;
 }
 
 const HomeScreen = () => {
