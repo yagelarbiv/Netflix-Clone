@@ -34,17 +34,23 @@ const WatchPage = () => {
   };
   const sliderRef = useRef<HTMLDivElement>(null);
 
+
+  const [isHovered, setIsHovered] = useState<boolean>(false)
+  const handleMouseEnter = () => setIsHovered(true);
+  const handleMouseLeave = () => setIsHovered(false);
+
+
   useEffect(() => {
     const getTrailers = async () => {
       try {
         const res = await AxiosContentInstance.get(
-          `/${id}/trailers/${contentType}/`,{
-            withCredentials: true,
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
+          `/${id}/trailers/${contentType}/`, {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
         );
         setTrailers(res.data.content);
       } catch (error) {
@@ -122,13 +128,13 @@ const WatchPage = () => {
     const getSeasonDetails = async () => {
       if (content && Object.keys(content).includes("number_of_seasons")) {
         const res = await AxiosContentInstance.get(
-          `${id}/season/${season === 0 ? 1 : season}`,{
-            withCredentials: true,
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
+          `${id}/season/${season === 0 ? 1 : season}`, {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
         );
         setSeasonDetails(res.data.content);
       }
@@ -210,9 +216,8 @@ const WatchPage = () => {
             <button
               title="Previous trailer"
               className={`
-							bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded ${
-                currentTrailerIdx === 0 ? "opacity-50 cursor-not-allowed " : ""
-              }}
+							bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded ${currentTrailerIdx === 0 ? "opacity-50 cursor-not-allowed " : ""
+                }}
 							`}
               disabled={currentTrailerIdx === 0}
               onClick={handlePrev}
@@ -223,11 +228,10 @@ const WatchPage = () => {
             <button
               title="Next trailer"
               className={`
-							bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded ${
-                currentTrailerIdx === trailers.length - 1
+							bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded ${currentTrailerIdx === trailers.length - 1
                   ? "opacity-50 cursor-not-allowed "
                   : ""
-              }}
+                }}
 							`}
               disabled={currentTrailerIdx === trailers.length - 1}
               onClick={handleNext}
@@ -272,7 +276,7 @@ const WatchPage = () => {
             <p className="mt-2 text-lg">
               {formatReleaseDate(
                 (content as Movie)?.release_date ||
-                  (content as TvShow)?.first_air_date
+                (content as TvShow)?.first_air_date
               )}{" "}
               |{" "}
               {(content as Movie)?.adult ? (
@@ -323,17 +327,55 @@ const WatchPage = () => {
                   key={episode.id}
                   className="mt-4 text-lg border-gray-500/70 hover:bg-gray-500 p-2"
                 >
-                  <p className="font-bold">
-                    {episode.episode_number}. {episode.name}
-                  </p>
-                  <p className="mt-2">{episode.overview}</p>
-                  <p>Air Date: {episode.air_date}</p>
-                  <p>Crew: {episode?.crew?.map((c) => c.name).join(", ")}</p>
-                  <p>
-                    Guest Stars:{" "}
-                    {episode?.guest_stars?.map((c) => c.name).join(", ")}
-                  </p>
+
+                  <div className="flex items-center"> {/* align items at the start to reduce vertical space */}
+
+                    <div className="flex-shrink-0 text-3xl mr-4 ml-24"> {/* Adjust margin-right */}
+                      {episode.episode_number}
+                    </div>
+
+
+                    <div className="relative">
+                      <img
+                        src={`https://image.tmdb.org/t/p/w500/${episode.still_path}`}
+                        alt="episode img"
+                        className="w-96 h-64"
+                        onMouseEnter={handleMouseEnter}
+                        onMouseLeave={handleMouseLeave}
+                      />
+
+                      {isHovered && trailers.length > 0 && (
+                        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
+                          <div className="px-4">
+                            <ReactPlayer
+                              controls={true}
+                              width="90%"
+                              height="20vh"
+                              className="mx-auto overflow-hidden rounded-lg"
+                              url={`https://www.youtube.com/watch?v=${trailers[currentTrailerIdx].key}`}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+
+
+                    <div className="ml-4 flex-1">
+                      <p className="font-bold">
+                        {episode.episode_number}. {episode.name}
+                      </p>
+                      <p className="mt-1">{episode.overview}</p> {/* Adjust margin-top */}
+                      <p className="mt-1">Air Date: {episode.air_date}</p> {/* Adjust margin-top */}
+                      <p className="mt-1">Crew: {episode?.crew?.map((c) => c.name).join(", ")}</p> {/* Adjust margin-top */}
+                      <p className="mt-1">
+                        Guest Stars: {episode?.guest_stars?.map((c) => c.name).join(", ")}
+                      </p> {/* Adjust margin-top */}
+                    </div>
+                  </div>
+                  <hr className="mt-2" /> {/* Adjust margin-top */}
                 </div>
+
               ))}
             </div>
           ) : null}
