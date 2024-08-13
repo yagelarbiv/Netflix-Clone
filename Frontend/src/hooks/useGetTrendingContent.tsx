@@ -1,26 +1,45 @@
 import { useEffect, useState } from "react";
 import { useContentStore } from "../store/content";
 import { Movie, TvShow } from "../pages/home/HomeScreen";
-import { AxiosContentInstance } from "../axios";
 import useAuthStore from "../store/authUser";
+import { AxiosResponse } from "axios";
+
 
 const useGetTrendingContent = () => {
 	const [trendingContent, setTrendingContent] = useState<Movie | TvShow>();
-	const { contentType } = useContentStore() as { contentType: string };
-	const { token } = useAuthStore() as { token: string }; 
-
+	const { contentType, getContent } = useContentStore() as { contentType: string, getContent: (url: string, token: string) => Promise<AxiosResponse | Error | undefined> };
+	const { token, authCheck } = useAuthStore() as { token: string, authCheck: () => Promise<void> }; 
+	const reDoFunction = async (func: (url: string, token: string) => Promise<AxiosResponse | Error | undefined>, url: string) => {
+		try {
+			authCheck();
+			const response = await func(url, token);
+			if (response instanceof Error) {
+				console.error(response);
+			} else {
+				setTrendingContent(response?.data.content);
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	}; 
+	
 	useEffect(() => {
 		const getTrendingContent = async () => {
 			console.log(token)
-			const res = await AxiosContentInstance.get(`trending/${contentType}`,{
-				withCredentials: true,
-				headers: {
-					'Content-Type': 'application/json',
-					'Authorization': `Bearer ${token}`
+			try {
+				const response = await getContent(`trending/${contentType}`, token);
+				if (response instanceof Error) {
+					console.error(response);
+				} else {
+					setTrendingContent(response?.data.content);
 				}
-			});
-			setTrendingContent(res.data.content);
-		};
+			} catch (error) {
+				console.error(error);
+				if (error instanceof Error) {
+					reDoFunction(getContent, `trending/${contentType}`);
+				}
+			}
+		}
 
 		getTrendingContent();
 	}, [contentType, token]);

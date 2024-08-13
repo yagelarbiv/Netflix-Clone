@@ -47,7 +47,6 @@ export const getSimilarContent = async (req, res) => {
 
 export const getContentByCategory = async (req, res) => {
   const { type, category } = req.params;
-  console.log(type, category);
   try {
     const { data } = await fetchFromTMDB(`https://api.themoviedb.org/3/${type}/${category}?language=en-US&page=1`);
     res.status(200).send({ content: data.results });

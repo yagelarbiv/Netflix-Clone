@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useContentStore } from "../store/content";
-import { AxiosError } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import Navbar from "../components/Navbar";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import ReactPlayer from "react-player";
@@ -10,7 +10,6 @@ import { formatReleaseDate } from "../utils/dateFunction";
 import WatchPageSkeleton from "../components/skeletons/WatchPageSkeleton";
 import toast from "react-hot-toast";
 import { Movie, Season, TvShow } from "./home/HomeScreen";
-import { AxiosContentInstance } from "../axios";
 import useAuthStore, { User } from "../store/authUser";
 
 interface Trailer {
@@ -26,11 +25,12 @@ const WatchPage = () => {
   const [season, setSeason] = useState<number>(0);
   const [seasonDetails, setSeasonDetails] = useState<Season>();
   const [similarContent, setSimilarContent] = useState([]);
-  const { contentType } = useContentStore() as { contentType: string };
-  const { user, update, token } = useAuthStore() as {
+  const { contentType, getContent } = useContentStore() as { contentType: string, getContent: (url: string, token: string) => Promise<AxiosResponse | undefined>; };
+  const { user, update, token, authCheck } = useAuthStore() as {
     user: User;
     update: (user: User) => Promise<void>;
     token: string;
+    authCheck: () => Promise<void>;
   };
   const sliderRef = useRef<HTMLDivElement>(null);
 
@@ -39,20 +39,25 @@ const WatchPage = () => {
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
 
+  const reDoFunction = async (func: (url: string, token: string) => Promise<AxiosResponse | undefined>, url: string) => {
+    try {
+      authCheck();
+      const response = await func(url, token);
+      if (response instanceof Error) {
+        console.error(response);
+      } else {
+        setContent(response?.data.content);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     const getTrailers = async () => {
       try {
-        const res = await AxiosContentInstance.get(
-          `/${id}/trailers/${contentType}/`, {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-        );
-        setTrailers(res.data.content);
+        const res = await getContent(`${contentType}/${id}/trailers`, token);
+        setTrailers(res?.data.content);
       } catch (error) {
         if (error instanceof AxiosError) {
           if (error.response?.status === 404) {
@@ -64,7 +69,9 @@ const WatchPage = () => {
           }
         } else {
           console.error(error);
-          toast.error("An unknown error occurred");
+          if (error instanceof Error) {
+            reDoFunction(getContent, `${contentType}/${id}/trailers`);
+          }
         }
       }
     };
@@ -75,22 +82,11 @@ const WatchPage = () => {
   useEffect(() => {
     const getSimilarContent = async () => {
       try {
-        const res = await AxiosContentInstance.get(
-          `${id}/similar/${contentType}`,
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setSimilarContent(res.data.content);
+        const res = await getContent(`${contentType}/${id}/similar`, token);
+        setSimilarContent(res?.data.content);
       } catch (error) {
-        if (error instanceof AxiosError) {
-          if (error.response?.status === 404) {
-            setSimilarContent([]);
-          }
+        if (error instanceof Error) {
+          reDoFunction(getContent, `${contentType}/${id}/similar`);
         }
       }
     };
@@ -101,20 +97,12 @@ const WatchPage = () => {
   useEffect(() => {
     const getContentDetails = async () => {
       try {
-        const res = await AxiosContentInstance.get(
-          `${id}/details/${contentType}`,
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setContent(res.data.content);
+        const res = await getContent(`${contentType}/${id}`, token);
+        setContent(res?.data.content);
       } catch (error) {
-        if (error instanceof Error && error.message.includes("404")) {
-          setContent({} as Movie | TvShow);
+        console.error(error);
+        if (error instanceof Error) {
+          reDoFunction(getContent, `${contentType}/${id}/trailers`);
         }
       } finally {
         setLoading(false);
@@ -127,16 +115,16 @@ const WatchPage = () => {
   useEffect(() => {
     const getSeasonDetails = async () => {
       if (content && Object.keys(content).includes("number_of_seasons")) {
-        const res = await AxiosContentInstance.get(
-          `${id}/season/${season === 0 ? 1 : season}`, {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+        try {
+          const res = await getContent(`${contentType}/${id}/season/${season}`, token);
+          setSeasonDetails(res?.data.content);
         }
-        );
-        setSeasonDetails(res.data.content);
+        catch (error){
+          console.error(error);
+          if (error instanceof Error) {
+            reDoFunction(getContent, `${contentType}/${id}/trailers`);
+          }
+        }
       }
     };
     getSeasonDetails();

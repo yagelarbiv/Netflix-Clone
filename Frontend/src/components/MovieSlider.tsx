@@ -5,7 +5,7 @@ import { SMALL_IMG_BASE_URL } from "../utils/constants";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Movie, TvShow } from "../pages/home/HomeScreen";
 import { AxiosContentInstance } from "../axios";
-import { AxiosError } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import useAuthStore from "../store/authUser";
 import Card from "./Card";
 
@@ -18,52 +18,44 @@ const MovieSlider = ({
   contType: string;
   title?: string;
 }) => {
-  const { contentType } = useContentStore() as { contentType: string };
+  const { contentType, getContent } = useContentStore() as { contentType: string, getContent: (url: string, token: string) => Promise<AxiosResponse | undefined> };
   const [content, setContent] = useState<(Movie | TvShow)[]>([]);
   const [showArrows, setShowArrows] = useState(false);
-  const { token } = useAuthStore() as { token: string };
-  // const [showHover, setShowHover] = useState(false);
+  const { token, authCheck } = useAuthStore() as { token: string, authCheck: () => Promise<void> };
 
   const sliderRef = useRef<HTMLDivElement>(null);
 
   const formattedCategoryName =
     category.replaceAll("_", " ")[0].toUpperCase() +
     category.replaceAll("_", " ").slice(1);
-  const formattedContentType = !(
-    contType.includes("empty") || contType.includes("all")
-  )
-    ? contentType === "movie"
-      ? "Movie"
-      : "TV Show"
-    : contType;
+  const formattedContentType = (contType.includes("empty") || contType.includes("all")) ? contentType === "movie" ? "Movie" : "TV Show" : contType;
+  console.log((contType.includes("empty")))
+    const reDoFunction = async (func: (url: string, token: string) => Promise<AxiosResponse | undefined>, url: string) => {
+      try {
+        authCheck();
+        const response = await func(url, token);
+        if (response instanceof Error) {
+          console.error(response);
+        } else {
+          setContent(response?.data.content);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }; 
 
   useEffect(() => {
-    const getContent = async () => {
+    const getContentfromAxios = async () => {
       try {
-        const res = await AxiosContentInstance.get(
-          `/${category}/${
-            contType.includes("empty") || contType.includes("all")
-              ? contentType
-              : contType
-          }`,
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setContent(res.data.content);
+        const response = await getContent(`${category}/${contType.includes("empty") || contType.includes("all") ? contentType : contType}`, token);
+          setContent(response?.data.content);
+
       } catch (error) {
         if (error instanceof AxiosError) {
-          if (error.response?.data?.message === "Unathorized - Invalid token") {
-            setContent([]);
-            return;
-          } else {
-            console.error(error);
-            setContent([]);
-          }
+          console.error(error);
+				if (error instanceof Error) {
+					reDoFunction(getContent, `${category}/${contType.includes("empty") || contType.includes("all") ? contentType : contType}`);
+				}
         }
       }
     };
@@ -97,7 +89,7 @@ const MovieSlider = ({
     if (contType === "all") {
       getAllContent();
     } else {
-      getContent();
+      getContentfromAxios();
     }
   }, [contentType, category, token, contType]);
 

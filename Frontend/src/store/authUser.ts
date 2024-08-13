@@ -1,9 +1,9 @@
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import { create } from "zustand";
-import { AxiosUsersInstance } from "../axios";
 import Cookie from 'js-cookie';
 import { Movie, TvShow } from "../pages/home/HomeScreen";
+import { AxiosUsersInstance } from "../axios";
 
 export interface User {
 	_id: '',
