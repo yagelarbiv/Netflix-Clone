@@ -7,6 +7,7 @@ import { Movie, TvShow } from "../pages/home/HomeScreen";
 import { AxiosContentInstance } from "../axios";
 import { AxiosError } from "axios";
 import useAuthStore from "../store/authUser";
+import Card from "./Card";
 
 
 const MovieSlider = ({ category, contType = "empty" }: { category: string, contType: string }) => {
@@ -14,6 +15,7 @@ const MovieSlider = ({ category, contType = "empty" }: { category: string, contT
 	const [content, setContent] = useState([]);
 	const [showArrows, setShowArrows] = useState(false);
 	const { token } = useAuthStore() as { token: string };
+	const [showHover, setShowHover] = useState(false);
 
 	const sliderRef = useRef<HTMLDivElement>(null);
 
@@ -24,7 +26,7 @@ const MovieSlider = ({ category, contType = "empty" }: { category: string, contT
 	useEffect(() => {
 		const getContent = async () => {
 			try {
-				const res = await AxiosContentInstance.get(`/${category}/${contType || contentType}`,
+				const res = await AxiosContentInstance.get(`/${category}/${contType === 'empty' ? contentType : contType}`,
         {
           withCredentials: true,
           headers: {
@@ -50,7 +52,7 @@ const MovieSlider = ({ category, contType = "empty" }: { category: string, contT
 		};
 
 		getContent();
-	}, [contentType, category, token]);
+	}, [contentType, category, token, contType]);
 
 	const scrollLeft = () => {
 		if (sliderRef.current) {
@@ -73,12 +75,15 @@ const MovieSlider = ({ category, contType = "empty" }: { category: string, contT
 
 			<div className='flex space-x-4 overflow-x-scroll scrollbar-hide' ref={sliderRef}>
 				{content.map((item:Movie|TvShow) => (
-					<Link to={`/watch/${item.id}`} className='min-w-[250px] relative group' key={item.id}>
+					<Link to={`/watch/${item.id}`} className='min-w-[250px] relative group' onMouseEnter={() => setShowHover(true)} onMouseLeave={() => setShowHover(false)} key={item.id}>
 						<div className='rounded-lg overflow-hidden'>
+							<div className={`${showHover ? '': 'hidden'}`}>
+								<Card movieData={item} />
+							</div>
 							<img
 								src={SMALL_IMG_BASE_URL + item.backdrop_path}
 								alt='Movie image'
-								className='transition-transform duration-300 ease-in-out group-hover:scale-125'
+								className={`${showHover ? 'hidden': 'transition-transform duration-300 ease-in-out group-hover:scale-125'}`}
 							/>
 						</div>
 						<p className='mt-2 text-center'>{(item as Movie).title || (item as TvShow).name}</p>

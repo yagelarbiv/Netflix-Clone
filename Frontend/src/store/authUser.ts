@@ -100,6 +100,7 @@ const useAuthStore = create<AuthStore>((set) => ({
     set({ isCheckingAuth: true });
     try {
       const UserCookie = JSON.parse(Cookie.get("user")?.toString() || "{}");
+      console.log(UserCookie);
       const response = await AxiosUsersInstance.post("/refresh", {
         id: UserCookie._id,
       });

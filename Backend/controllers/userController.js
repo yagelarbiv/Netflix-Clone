@@ -10,12 +10,12 @@ const signin = async (req, res) => {
   const { email, password } = req.body;
   const errors = await validateSignInRequest({ email, password });
   if (Object.keys(errors).length > 0) {
-    console.log(errors);
+    console.log('search' + errors);
     res.status(400).send(errors);
   } else {
     const user = await User.findOne({ email });
     if (user) {
-      console.log(user.password);
+      console.log('search' + user.password);
       if (bcrypt.compareSync(password, user.password)) {
         const token = generateToken(user._id, res);
         res.send({ ...user._doc, password: "",token: token });
@@ -60,7 +60,6 @@ const logout = async (req, res) => {
 };
 
 const refreshToken = async (req, res) => {
-  console.log(req.body)
   const { id } = req.body;
   const user = await User.findById(id);
   if (user) {
@@ -84,7 +83,7 @@ const updateUser = async (req, res) => {
       },
       { new: true }
     );
-    console.log(user.myList);
+    console.log('jhj' + user.myList);
     await user.save();
     res.send({ ...user._doc, password: "" });
 }

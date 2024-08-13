@@ -33,8 +33,6 @@ const Navbar = () => {
 					<Link to='/' className='hover:underline' onClick={() => setContentType("tv")}>
 						Tv Shows
 					</Link>
-					{/* 
-					*/}
 					<Link to='/myList' className='hover:underline'>
 						my list
 					</Link>
@@ -70,11 +68,6 @@ const Navbar = () => {
 					<Link to={"/myList"} className='block hover:underline p-2' onClick={toggleMobileMenu}>
           	my list
 					</Link>
-					{/* 
-					<Link to='/Home' className='hover:underline' onClick={() => setContentType("tv")}>
-						Home
-					</Link>
-					*/}
 				</div>
 			)}
 		</header>
