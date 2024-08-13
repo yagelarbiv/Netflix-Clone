@@ -25,7 +25,7 @@ const Navbar = () => {
 						Home
 					</Link>
 					<Link to='/newAndpopular' className='hover:underline'>
-						new & popular
+						New & Popular
 					</Link>
 					<Link to='/' className='hover:underline' onClick={() => setContentType("movie")}>
 						Movies
