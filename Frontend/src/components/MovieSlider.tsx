@@ -118,11 +118,11 @@ const MovieSlider = ({
 
   return (
     <div
-      className="bg-black text-white relative px-5 md:px-20"
+      className="bg-black text-white relative px-5 md:px-20 flex flex-col gap-4 py-8"
       onMouseEnter={() => setShowArrows(true)}
       onMouseLeave={() => setShowArrows(false)}
     >
-      <h2 className="mb-4 text-2xl font-bold">
+      <h2 className="mb-4 ml-12 text-2xl font-bold">
         {title ? title : `${formattedCategoryName} ${formattedContentType}`}
       </h2>
 
@@ -138,14 +138,7 @@ const MovieSlider = ({
             key={item.id}
           >
             <div className="rounded-lg overflow-hidden">
-              <div className="hidden">
                 <Card movieData={item} />
-              </div>
-              <img
-                src={SMALL_IMG_BASE_URL + item.backdrop_path}
-                alt="Movie image"
-                className="transition-transform duration-300 ease-in-out group-hover:scale-125"
-              />
             </div>
             <p className="mt-2 text-center">
               {(item as Movie).title || (item as TvShow).name}
@@ -172,7 +165,7 @@ const MovieSlider = ({
       </div>
 
       {showArrows && (
-        <>
+        <div>
           <button
             type="button"
             title="Scroll left"
@@ -194,7 +187,7 @@ const MovieSlider = ({
           >
             <ChevronRight size={24} />
           </button>
-        </>
+        </div>
       )}
     </div>
   );
