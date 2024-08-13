@@ -53,6 +53,34 @@ export const HOME_PAGE_SLIDER_CATEGORIES: categories[] = [
   }
 ];
 
+export const NEW_AND_POPULAR_CATEGORIES: categories[] = [
+  {
+    title:"trending movies and tv shows",
+    category: "trending_all",
+    content: "all"
+  },
+  {
+    title: "tv shows on the air",
+    category: "on_the_air",
+    content: "tv"
+  },
+  {
+    title: "Now Playing movies",
+    category: "now_playing",
+    content: "movie"
+  },
+  {
+    title: "tv shows Airing Today",
+    category: "airing_today",
+    content: "tv"
+  },
+  {
+    title: "upcoming movies",
+    category: "upcoming",
+    content: "movie"
+  },
+]
+
 export type Genre = {
   id: number;
   name: string;

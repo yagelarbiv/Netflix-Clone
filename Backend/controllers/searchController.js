@@ -7,7 +7,6 @@ export async function searchPerson(req, res) {
 		const response = await fetchFromTMDB(
 			`https://api.themoviedb.org/3/search/person?query=${query}&include_adult=false&language=en-US&page=1`
 		);
-		console.log('search' + response.data.results);
 
 		if (response.data.results.length === 0) {
 			return res.status(404).send(null);
@@ -27,7 +26,6 @@ export async function searchContent(req, res) {
 		const response = await fetchFromTMDB(
 			`https://api.themoviedb.org/3/search/${type}?query=${query}&include_adult=false&language=en-US&page=1`
 		);
-		console.log('search' + response.data.results);
 
 		if (response.data.results.length === 0) {
 			return res.status(404).send(null);

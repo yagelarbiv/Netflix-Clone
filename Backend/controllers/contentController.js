@@ -47,10 +47,18 @@ export const getSimilarContent = async (req, res) => {
 
 export const getContentByCategory = async (req, res) => {
   const { type, category } = req.params;
-  console.log(type, category);
   try {
     const { data } = await fetchFromTMDB(`https://api.themoviedb.org/3/${type}/${category}?language=en-US&page=1`);
-    console.log(`data=================================================================================================== `, data);
+    res.status(200).send({ content: data.results });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "Internal server error" });
+  }
+};
+
+export const getAllContentByCategory = async (req, res) => {
+  try {
+    const { data } = await fetchFromTMDB(`https://api.themoviedb.org/3/trending/all/day?language=en-US`);
     res.status(200).send({ content: data.results });
   } catch (error) {
     console.log(error);
@@ -60,7 +68,6 @@ export const getContentByCategory = async (req, res) => {
 
 export const getSeasonDetails = async (req, res) => {
   const { id, seasonNumber } = req.params;
-  console.log(id, seasonNumber);
   try {
     const { data } = await fetchFromTMDB(`https://api.themoviedb.org/3/tv/${id}/season/${seasonNumber}?language=en-US`);
     res.status(200).send({ content: data });

@@ -10,12 +10,10 @@ const signin = async (req, res) => {
   const { email, password } = req.body;
   const errors = await validateSignInRequest({ email, password });
   if (Object.keys(errors).length > 0) {
-    console.log('search' + errors);
     res.status(400).send(errors);
   } else {
     const user = await User.findOne({ email });
     if (user) {
-      console.log('search' + user.password);
       if (bcrypt.compareSync(password, user.password)) {
         const token = generateToken(user._id, res);
         res.send({ ...user._doc, password: "",token: token });
@@ -27,7 +25,6 @@ const signin = async (req, res) => {
 
 const signup = async (req, res) => {
   const { username, email, password } = req.body;
-  console.log(username, email, password);
   const errors = await validateSignUpRequest({
     username,
     email,
@@ -41,7 +38,6 @@ const signup = async (req, res) => {
       email,
       password: bcrypt.hashSync(password),
     });
-    console.log(newUser);
     const user = await newUser.save();
     const token = generateToken(user._id, res);
     res.status(201).send({ ...user._doc, password: "",token: token });
@@ -50,7 +46,6 @@ const signup = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    console.log("res")
     res.clearCookie("Jwt");
     res.send({ message: "Logged out successfully" });
   } catch (error) {
@@ -83,7 +78,6 @@ const updateUser = async (req, res) => {
       },
       { new: true }
     );
-    console.log('jhj' + user.myList);
     await user.save();
     res.send({ ...user._doc, password: "" });
 }

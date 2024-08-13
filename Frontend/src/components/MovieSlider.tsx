@@ -9,114 +9,194 @@ import { AxiosError } from "axios";
 import useAuthStore from "../store/authUser";
 import Card from "./Card";
 
+const MovieSlider = ({
+  category,
+  contType = "empty",
+  title,
+}: {
+  category: string;
+  contType: string;
+  title?: string;
+}) => {
+  const { contentType } = useContentStore() as { contentType: string };
+  const [content, setContent] = useState<(Movie | TvShow)[]>([]);
+  const [showArrows, setShowArrows] = useState(false);
+  const { token } = useAuthStore() as { token: string };
+  // const [showHover, setShowHover] = useState(false);
 
-const MovieSlider = ({ category, contType = "empty" }: { category: string, contType: string }) => {
-	const { contentType } = useContentStore() as { contentType: string };
-	const [content, setContent] = useState([]);
-	const [showArrows, setShowArrows] = useState(false);
-	const { token } = useAuthStore() as { token: string };
-	const [showHover, setShowHover] = useState(false);
+  const sliderRef = useRef<HTMLDivElement>(null);
 
-	const sliderRef = useRef<HTMLDivElement>(null);
+  const formattedCategoryName =
+    category.replaceAll("_", " ")[0].toUpperCase() +
+    category.replaceAll("_", " ").slice(1);
+  const formattedContentType = !(
+    contType.includes("empty") || contType.includes("all")
+  )
+    ? contentType === "movie"
+      ? "Movie"
+      : "TV Show"
+    : contType;
 
-	const formattedCategoryName =
-		category.replaceAll("_", " ")[0].toUpperCase() + category.replaceAll("_", " ").slice(1);
-	const formattedContentType = (contType === "empty") ? ((contentType === "movie") ? ("Movie") : ("TV Show")) : contType;
-
-	useEffect(() => {
-		const getContent = async () => {
-			try {
-				const res = await AxiosContentInstance.get(`/${category}/${contType === 'empty' ? contentType : contType}`,
-        {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+  useEffect(() => {
+    const getContent = async () => {
+      try {
+        const res = await AxiosContentInstance.get(
+          `/${category}/${
+            contType.includes("empty") || contType.includes("all")
+              ? contentType
+              : contType
+          }`,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setContent(res.data.content);
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          if (error.response?.data?.message === "Unathorized - Invalid token") {
+            setContent([]);
+            return;
+          } else {
+            console.error(error);
+            setContent([]);
           }
         }
-      );
-			setContent(res.data.content);
-		}
-		catch (error) {
-			if (error instanceof AxiosError) {
-				if (error.response?.data?.message === 'Unathorized - Invalid token') {
-					setContent([]);
-					return;
-				}
-				else{
-					console.error(error);
-					setContent([]);
-				}
-			}
-		}
-		};
+      }
+    };
 
-		getContent();
-	}, [contentType, category, token, contType]);
+    const getAllContent = async () => {
+      try {
+        const res = await AxiosContentInstance.get(
+          `/trending/all`,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+				console.log(res)
+        setContent(res.data.content);
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          if (error.response?.data?.message === "Unathorized - Invalid token") {
+            setContent([]);
+            return;
+          } else {
+            console.error(error);
+            setContent([]);
+          }
+        }
+      }
+    };
+    if (contType === "all") {
+      getAllContent();
+    } else {
+      getContent();
+    }
+  }, [contentType, category, token, contType]);
 
-	const scrollLeft = () => {
-		if (sliderRef.current) {
-			sliderRef.current.scrollBy({ left: -sliderRef.current.offsetWidth, behavior: "smooth" });
-		}
-	};
-	const scrollRight = () => {
-		sliderRef.current?.scrollBy({ left: sliderRef.current.offsetWidth, behavior: "smooth" });
-	};
+  const scrollLeft = () => {
+    if (sliderRef.current) {
+      sliderRef.current.scrollBy({
+        left: -sliderRef.current.offsetWidth,
+        behavior: "smooth",
+      });
+    }
+  };
+  const scrollRight = () => {
+    sliderRef.current?.scrollBy({
+      left: sliderRef.current.offsetWidth,
+      behavior: "smooth",
+    });
+  };
 
-	return (
-		<div
-			className='bg-black text-white relative px-5 md:px-20'
-			onMouseEnter={() => setShowArrows(true)}
-			onMouseLeave={() => setShowArrows(false)}
-		>
-			<h2 className='mb-4 text-2xl font-bold'>
-				{formattedCategoryName} {formattedContentType}
-			</h2>
+  return (
+    <div
+      className="bg-black text-white relative px-5 md:px-20"
+      onMouseEnter={() => setShowArrows(true)}
+      onMouseLeave={() => setShowArrows(false)}
+    >
+      <h2 className="mb-4 text-2xl font-bold">
+        {title ? title : `${formattedCategoryName} ${formattedContentType}`}
+      </h2>
 
-			<div className='flex space-x-4 overflow-x-scroll scrollbar-hide' ref={sliderRef}>
-				{content.map((item:Movie|TvShow) => (
-					<Link to={`/watch/${item.id}`} className='min-w-[250px] relative group' onMouseEnter={() => setShowHover(true)} onMouseLeave={() => setShowHover(false)} key={item.id}>
-						<div className='rounded-lg overflow-hidden'>
-							<div className={`${showHover ? '': 'hidden'}`}>
-								<Card movieData={item} />
-							</div>
-							<img
-								src={SMALL_IMG_BASE_URL + item.backdrop_path}
-								alt='Movie image'
-								className={`${showHover ? 'hidden': 'transition-transform duration-300 ease-in-out group-hover:scale-125'}`}
-							/>
-						</div>
-						<p className='mt-2 text-center'>{(item as Movie).title || (item as TvShow).name}</p>
-					</Link>
-				))}
-			</div>
+      <div
+        className="flex space-x-4 overflow-x-scroll scrollbar-hide"
+        ref={sliderRef}
+      >
+        {Array.isArray(content) && content.length > 0 ? 
+				(content.map((item: Movie | TvShow) => (
+          <Link
+            to={`/watch/${item.id}`}
+            className="min-w-[250px] relative group"
+            key={item.id}
+          >
+            <div className="rounded-lg overflow-hidden">
+              <div className="hidden">
+                <Card movieData={item} />
+              </div>
+              <img
+                src={SMALL_IMG_BASE_URL + item.backdrop_path}
+                alt="Movie image"
+                className="transition-transform duration-300 ease-in-out group-hover:scale-125"
+              />
+            </div>
+            <p className="mt-2 text-center">
+              {(item as Movie).title || (item as TvShow).name}
+            </p>
+          </Link>
+				))) : (
+					<Link
+            to={`/watch/${(content as unknown as Movie | TvShow).id}`}
+            className="min-w-[250px] relative group"
+            key={(content as unknown as Movie | TvShow).id}
+          >
+            <div className="rounded-lg overflow-hidden">
+              <img
+                src={SMALL_IMG_BASE_URL + (content as unknown as Movie | TvShow).backdrop_path}
+                alt="Movie image"
+                className="transition-transform duration-300 ease-in-out group-hover:scale-125"
+              />
+            </div>
+            <p className="mt-2 text-center">
+              {(content as unknown as Movie).title || (content as unknown as TvShow).name}
+            </p>
+          </Link>
+				)}
+      </div>
 
-			{showArrows && (
-				<>
-					<button
+      {showArrows && (
+        <>
+          <button
             type="button"
             title="Scroll left"
-						className='absolute top-1/2 -translate-y-1/2 left-5 md:left-24 flex items-center justify-center
+            className="absolute top-1/2 -translate-y-1/2 left-5 md:left-24 flex items-center justify-center
             size-12 rounded-full bg-black bg-opacity-50 hover:bg-opacity-75 text-white z-10
-            '
-						onClick={scrollLeft}
-					>
-						<ChevronLeft size={24} />
-					</button>
+            "
+            onClick={scrollLeft}
+          >
+            <ChevronLeft size={24} />
+          </button>
 
-					<button
+          <button
             type="button"
             title="Scroll right"
-						className='absolute top-1/2 -translate-y-1/2 right-5 md:right-24 flex items-center justify-center
+            className="absolute top-1/2 -translate-y-1/2 right-5 md:right-24 flex items-center justify-center
             size-12 rounded-full bg-black bg-opacity-50 hover:bg-opacity-75 text-white z-10
-            '
-						onClick={scrollRight}
-					>
-						<ChevronRight size={24} />
-					</button>
-				</>
-			)}
-		</div>
-	);
+            "
+            onClick={scrollRight}
+          >
+            <ChevronRight size={24} />
+          </button>
+        </>
+      )}
+    </div>
+  );
 };
 export default MovieSlider;
