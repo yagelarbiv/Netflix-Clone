@@ -7,5 +7,7 @@ export const ENV_VARS = {
   JWT_PW: process.env.JWT_PW,
   PORT: process.env.PORT || 8080,
   NODE_ENV: process.env.NODE_ENV,
-  TMDB_API_KEY: process.env.TMDB_API_KEY
+  TMDB_API_KEY: process.env.TMDB_API_KEY,
+  EmailUserName: process.env.EMAIL_USER_NAME,
+  EmailPassword: process.env.EMAIL_PASSWORD
 };

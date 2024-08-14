@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { ENV_VARS } from "./config/envVars.js";
+import nodemailer from 'nodemailer';
 
 const generateToken = (_id, res) => {
   const token = jwt.sign(
@@ -19,5 +20,44 @@ const generateToken = (_id, res) => {
   });
   return token;
 };
+
+export const sendMail = async (options) => {
+  console.log(options);
+  if (ENV_VARS.EmailUserName && ENV_VARS.EmailPassword) {
+      const user = ENV_VARS.EmailUserName.toString();
+      const pass = ENV_VARS.EmailPassword.toString();
+      const transport = nodemailer.createTransport({
+          service: 'Gmail',
+          secure: false,
+          auth: {
+              user: user,
+              pass: pass
+          },
+          tls: {
+              rejectUnauthorized: false
+          }
+      });
+      console.log(transport);
+      const mail = {
+          from: "Netflix Yagel & Avi",
+          to: options.email,
+          subject: options.subject,
+          text: options.message
+      }
+
+      await new Promise((resolve, reject) => {
+          transport.sendMail(mail, (error, info) => {
+              if (error) {
+                  console.log(error.message)
+                  reject(error)
+              } else {
+                  console.log("success")
+              }
+              resolve(info)
+          })
+  })
+  }
+}
+
 
 export { generateToken };

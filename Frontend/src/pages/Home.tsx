@@ -2,8 +2,8 @@ import MovieSlider from "../components/MovieSlider"
 import Navbar from "../components/Navbar";
 import { HOME_PAGE_SLIDER_CATEGORIES } from "../utils/constants"
 
-
 function Home() {
+
 
   return (
     <div className="min-h-screen bg-black text-white">

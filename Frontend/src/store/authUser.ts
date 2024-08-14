@@ -26,6 +26,7 @@ interface AuthStore {
   logout: () => Promise<void>;
   authCheck: () => Promise<void>;
   update: (user: User) => Promise<void>;
+  generatepassword: (email: string, code: string) => Promise<void>;
 }
 
 const useAuthStore = create<AuthStore>((set) => ({
@@ -137,6 +138,21 @@ const useAuthStore = create<AuthStore>((set) => ({
       toast.error((axiosError.response?.data as { message: string }).message || "update failed");
     }
   },
+  generatepassword: async (email: string, code: string) => {
+    try {
+      const response = await AxiosUsersInstance.post("/forgot-password",{
+        email: email,
+        code: code
+      });
+      console.log(response.data);
+      toast.success(response.data.message || "generate password successful");
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      console.log("Error generating password:", axiosError);
+      console.log("Response data:", axiosError.response?.data);
+      toast.error((axiosError.response?.data as { message: string }).message || "generate password failed");
+    }
+  }
 }));
 
 export default useAuthStore;

@@ -1,10 +1,11 @@
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
-import { generateToken } from "../utils.js";
+import { generateToken, sendMail } from "../utils.js";
 import {
   validateSignInRequest,
   validateSignUpRequest,
 } from "../vallidations/Auth.js";
+import crypto from 'crypto'
 
 const signin = async (req, res) => {
   const { email, password } = req.body;
@@ -80,6 +81,49 @@ const updateUser = async (req, res) => {
     );
     await user.save();
     res.send({ ...user._doc, password: "" });
-}
+};
 
-export { signin, logout, signup, refreshToken, updateUser };
+const forgotPassword = async (req, res) => {
+  const { email, code } = req.body;
+  const user = await User.findOne({ email });
+  if (user) {
+    const message = `your password reset code is ${code}`
+    try {
+        await sendMail({
+            email: user.email,
+            subject: "password change request received",
+            message: message
+        })
+        res.status(200).send({
+            status: 'success',
+            message: "code sent successfully"
+        });
+    } catch (error) {
+      res.send({ success: false, message: "Email not sent" });
+    }
+  } else {
+    res.status(401).send({ message: "user not found" });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  const token = crypto.createHash("sha256").update(req.params.token).digest('hex');
+  const user = await User.findOne({ passwordResetToken: token, passwordResetTokenExpires: { $gt: Date.now() } });
+  if (user) {
+      user.password = bcrypt.hashSync(req.body.password);
+      user.passwordResetToken = undefined;
+      user.passwordResetTokenExpires = undefined;
+      user.passwordChangeAt = Date.now();
+      user.save();
+      res.status(200).send({
+          _id: user._id,
+          username: user.username,
+          email: user.email,
+          token: generateToken(user),
+      });
+  } else {
+      res.status(400).send({ message: "token is invalid or has expired" });
+  }
+}  
+
+export { signin, logout, signup, refreshToken, updateUser, forgotPassword };

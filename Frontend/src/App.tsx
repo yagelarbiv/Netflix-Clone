@@ -13,6 +13,7 @@ import NotFoundPage from "./pages/404";
 import UserList from "./pages/UserList";
 import NewAndPopularPage from "./pages/New&PopularPage";
 import Home from './pages/Home';
+import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
 	const { user, isCheckingAuth, authCheck } = useAuthStore();
@@ -43,9 +44,9 @@ function App() {
 				<Route path="/newAndpopular" element={<NewAndPopularPage />} />
 				<Route path="/home" element={<Home />} />
 				<Route path='/*' element={<NotFoundPage />} />
+				<Route path="/forgot-password" element={<ForgotPassword />} />
 			</Routes>
 			<Footer />
-
 			<Toaster />
 		</>
 	);
