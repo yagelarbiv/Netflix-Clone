@@ -25,6 +25,7 @@ const WatchPage = () => {
   const [season, setSeason] = useState<number>(0);
   const [seasonDetails, setSeasonDetails] = useState<Season>();
   const [similarContent, setSimilarContent] = useState([]);
+  const [hover, setHover] = useState(false);
   const { contentType, getContent } = useContentStore() as { contentType: string, getContent: (url: string, token: string) => Promise<AxiosResponse | undefined>; };
   const { user, update, token, authCheck } = useAuthStore() as {
     user: User;
@@ -231,10 +232,11 @@ const WatchPage = () => {
           </div>
         )}
 
-        <div className="aspect-video mb-8 p-2 sm:px-10 md:px-32">
+        <div className="aspect-video mb-8 p-2 sm:px-10 md:px-32" onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
           {trailers?.length > 0 && (
             <ReactPlayer
               controls={true}
+              playing={hover}
               width={"100%"}
               height={"70vh"}
               className="mx-auto overflow-hidden rounded-lg"
