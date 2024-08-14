@@ -131,38 +131,46 @@ const MovieSlider = ({
         className="flex space-x-4 overflow-x-scroll scrollbar-hide"
         ref={sliderRef}
       >
-        {Array.isArray(content) && content.length > 0 ? 
-				(content.map((item: Movie | TvShow) => (
-          <Link
-            to={`/watch/${item.id}`}
-            className="min-w-[250px] relative group"
-            key={item.id}
-          >
-            <div className="rounded-lg overflow-hidden">
+        {Array.isArray(content) && content.length > 0 ?
+          (content.map((item: Movie | TvShow) => (
+            
+            
+            <Link
+              to={`/watch/${item.id}`}
+              className="min-w-[250px] relative group" //Card size
+              key={item.id}
+            >
+              
+
+
+              <div className="rounded-lg overflow-hidden transition-transform duration-300 transform group-hover:scale-y-600 group-hover:scale-x-200">
                 <Card movieData={item} />
-            </div>
-            <p className="mt-2 text-center">
-              {(item as Movie).title || (item as TvShow).name}
-            </p>
-          </Link>
-				))) : (
-					<Link
-            to={`/watch/${(content as unknown as Movie | TvShow)?.id}`}
-            className="min-w-[250px] relative group"
-            key={(content as unknown as Movie | TvShow).id}
-          >
-            <div className="rounded-lg overflow-hidden">
-              <img
-                src={SMALL_IMG_BASE_URL + (content as unknown as Movie | TvShow).backdrop_path}
-                alt="Movie image"
-                className="transition-transform duration-300 ease-in-out group-hover:scale-125"
-              />
-            </div>
-            <p className="mt-2 text-center">
-              {(content as unknown as Movie).title || (content as unknown as TvShow).name}
-            </p>
-          </Link>
-				)}
+              </div>
+
+
+
+              <p className="mt-2 text-center">
+                {(item as Movie).title || (item as TvShow).name}
+              </p>
+            </Link>
+          ))) : (
+            <Link
+              to={`/watch/${(content as unknown as Movie | TvShow).id}`}
+              className="min-w-[250px] relative group"
+              key={(content as unknown as Movie | TvShow).id}
+            >
+              <div className="rounded-lg overflow-hidden">
+                <img
+                  src={SMALL_IMG_BASE_URL + (content as unknown as Movie | TvShow).backdrop_path}
+                  alt="Movie image"
+                  className="transition-transform duration-300 ease-in-out group-hover:scale-125" // here the problem
+                />
+              </div>
+              <p className="mt-2 text-center">
+                {(content as unknown as Movie).title || (content as unknown as TvShow).name}
+              </p>
+            </Link>
+          )}
       </div>
 
       {showArrows && (
