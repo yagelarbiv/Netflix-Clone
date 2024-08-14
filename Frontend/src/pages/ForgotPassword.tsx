@@ -93,14 +93,7 @@ function ForgotPassword() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission logic here
-    if (resetOption === "email") {
-      console.log("Password reset option:", resetOption);
-      console.log("Email:", email);
-    } else {
-      // Handle form submission logic here
-      console.log("Password reset option:", resetOption);
-      console.log("Phone Number:", countryCode + phoneNumber);
-    }
+
   };
 
   return (

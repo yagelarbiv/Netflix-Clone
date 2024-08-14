@@ -24,7 +24,6 @@ export const useContentStore = create<ContentStore>((set) => ({
 						'Authorization': `Bearer ${token}`
 					}
 				});
-				console.log(url, res);
 				set({ isLoading: false });
 				return res;
 			} else {

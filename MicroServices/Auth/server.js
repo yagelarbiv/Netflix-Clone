@@ -22,8 +22,11 @@ app.use('/seed',seedRouter);
 app.use('/users', userRouter);
 
 //not found handler
-app.use((err,req,res,next)=> {
-    res.status(500).send({message: err.message});
+app.use((err, req, res, next) => {
+    if (res.headersSent) {
+        return next(err); // Pass to default error handler if headers are already sent
+    }
+    res.status(500).send({ message: err.message });
 });
 
 app.listen(PORT, () => {

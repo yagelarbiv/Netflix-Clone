@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 import { Movie, Season, TvShow } from "./home/HomeScreen";
 import useAuthStore, { User } from "../store/authUser";
 
-interface Trailer {
+export interface Trailer {
   key: string;
 }
 

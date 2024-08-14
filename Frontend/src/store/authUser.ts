@@ -101,7 +101,6 @@ const useAuthStore = create<AuthStore>((set) => ({
     set({ isCheckingAuth: true });
     try {
       const UserCookie = JSON.parse(Cookie.get("user")?.toString() || "{}");
-      console.log(UserCookie);
       const response = await AxiosUsersInstance.post("/refresh", {
         id: UserCookie._id,
       });
@@ -144,7 +143,6 @@ const useAuthStore = create<AuthStore>((set) => ({
         email: email,
         code: code
       });
-      console.log(response.data);
       toast.success(response.data.message || "generate password successful");
     } catch (error: unknown) {
       const axiosError = error as AxiosError;

@@ -22,10 +22,10 @@ app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 
 //routers
-app.use('/api/v1/seed',seedRouter);
-app.use('/api/v1/users', userRouter);
-app.use('/api/v1/content', protectRoute, contentRouter);
-app.use("/api/v1/search", protectRoute, searchRoutes);
+// app.use('/api/v1/seed',seedRouter);
+// app.use('/api/v1/users', userRouter);
+// app.use('/api/v1/content', protectRoute, contentRouter);
+// app.use("/api/v1/search", protectRoute, searchRoutes);
 
 //Microservices
 const auth = proxy("http://localhost:5000")
