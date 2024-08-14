@@ -24,7 +24,7 @@ export const getContentTrailers = async (req, res) => {
 };
 
 export const getContentDetails = async (req, res) => {
-  const { type, id } = req.params;
+  const { id, type } = req.params;
   try {
     const { data } = await fetchFromTMDB(`https://api.themoviedb.org/3/${type}/${id}?language=en-US`);
     res.status(200).send({ content: data });
@@ -40,7 +40,7 @@ export const getSimilarContent = async (req, res) => {
     const { data } = await fetchFromTMDB(`https://api.themoviedb.org/3/${type}/${id}/similar?language=en-US&page=1`);
     res.status(200).send({ content: data.results });
   } catch (error) {
-    console.log(error);
+    console.log('error', error);
     res.status(500).send({ message: "Internal server error" });
   }
 };

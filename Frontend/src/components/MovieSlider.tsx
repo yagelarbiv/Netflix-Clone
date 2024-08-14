@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useContentStore } from "../store/content";
 import { Link } from "react-router-dom";
 import { SMALL_IMG_BASE_URL } from "../utils/constants";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader } from "lucide-react";
 import { Movie, TvShow } from "../pages/home/HomeScreen";
 import { AxiosContentInstance } from "../axios";
 import { AxiosError, AxiosResponse } from "axios";
@@ -29,7 +29,6 @@ const MovieSlider = ({
     category.replaceAll("_", " ")[0].toUpperCase() +
     category.replaceAll("_", " ").slice(1);
   const formattedContentType = (contType.includes("empty") || contType.includes("all")) ? contentType === "movie" ? "Movie" : "TV Show" : contType;
-  console.log((contType.includes("empty")))
     const reDoFunction = async (func: (url: string, token: string) => Promise<AxiosResponse | undefined>, url: string) => {
       try {
         authCheck();
@@ -72,7 +71,6 @@ const MovieSlider = ({
             },
           }
         );
-				console.log(res)
         setContent(res.data.content);
       } catch (error) {
         if (error instanceof AxiosError) {
@@ -92,6 +90,17 @@ const MovieSlider = ({
       getContentfromAxios();
     }
   }, [contentType, category, token, contType]);
+
+      
+  if(!token){
+    return(
+      <div className='h-screen'>
+      <div className='flex justify-center items-center bg-black h-full'>
+        <Loader className='animate-spin text-red-600 size-10' />
+      </div>
+    </div>
+    );
+  }
 
   const scrollLeft = () => {
     if (sliderRef.current) {
@@ -138,7 +147,7 @@ const MovieSlider = ({
           </Link>
 				))) : (
 					<Link
-            to={`/watch/${(content as unknown as Movie | TvShow).id}`}
+            to={`/watch/${(content as unknown as Movie | TvShow)?.id}`}
             className="min-w-[250px] relative group"
             key={(content as unknown as Movie | TvShow).id}
           >

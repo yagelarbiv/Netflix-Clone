@@ -1,7 +1,5 @@
 import { create } from "zustand";
 import { AxiosContentInstance } from "../axios";
-import { AxiosError } from "axios";
-import toast from "react-hot-toast";
 import { AxiosResponse } from "axios";
 
 interface ContentStore {
@@ -25,7 +23,8 @@ export const useContentStore = create<ContentStore>((set) => ({
 						'Content-Type': 'application/json',
 						'Authorization': `Bearer ${token}`
 					}
-				})
+				});
+				console.log(url, res);
 				set({ isLoading: false });
 				return res;
 			} else {
@@ -33,8 +32,6 @@ export const useContentStore = create<ContentStore>((set) => ({
 			}
 		} catch (error: unknown) {
 			set({ isLoading: false });
-			const axiosError = error as AxiosError;
-			toast.error((axiosError.response as unknown as { message: string }).message || "ContentRequest failed from: " + url);
 			const errorAsError = error as Error;
 			if (errorAsError.message === "Unathorized - Invalid token"){
 				throw new Error("Unathorized - Invalid token");

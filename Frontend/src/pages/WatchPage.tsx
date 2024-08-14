@@ -56,7 +56,8 @@ const WatchPage = () => {
   useEffect(() => {
     const getTrailers = async () => {
       try {
-        const res = await getContent(`${contentType}/${id}/trailers`, token);
+        const res = await getContent(`${id}/trailers/${contentType}`, token);
+
         setTrailers(res?.data.content);
       } catch (error) {
         if (error instanceof AxiosError) {
@@ -70,7 +71,7 @@ const WatchPage = () => {
         } else {
           console.error(error);
           if (error instanceof Error) {
-            reDoFunction(getContent, `${contentType}/${id}/trailers`);
+            reDoFunction(getContent, `${id}/trailers/${contentType}`);
           }
         }
       }
@@ -82,11 +83,12 @@ const WatchPage = () => {
   useEffect(() => {
     const getSimilarContent = async () => {
       try {
-        const res = await getContent(`${contentType}/${id}/similar`, token);
+        const res = await getContent(`${id}/similar/${contentType}`, token);
+
         setSimilarContent(res?.data.content);
       } catch (error) {
         if (error instanceof Error) {
-          reDoFunction(getContent, `${contentType}/${id}/similar`);
+          reDoFunction(getContent, `${id}/similar/${contentType}`);
         }
       }
     };
@@ -97,12 +99,12 @@ const WatchPage = () => {
   useEffect(() => {
     const getContentDetails = async () => {
       try {
-        const res = await getContent(`${contentType}/${id}`, token);
-        setContent(res?.data.content);
+        const res = await getContent(`${id}/details/${contentType}`, token);
+        setContent(res?.data?.content);
       } catch (error) {
         console.error(error);
         if (error instanceof Error) {
-          reDoFunction(getContent, `${contentType}/${id}/trailers`);
+          reDoFunction(getContent, `${id}/details/${contentType}`);
         }
       } finally {
         setLoading(false);
@@ -172,7 +174,7 @@ const WatchPage = () => {
       });
   };
 
-  if (loading)
+  if (loading || !token)
     return (
       <div className="min-h-screen bg-black p-10">
         <WatchPageSkeleton />
@@ -199,7 +201,7 @@ const WatchPage = () => {
       <div className="mx-auto container px-4 py-8 h-full">
         <Navbar />
 
-        {trailers.length > 0 && (
+        {trailers?.length > 0 && (
           <div className="flex justify-between items-center mb-4">
             <button
               title="Previous trailer"
@@ -230,7 +232,7 @@ const WatchPage = () => {
         )}
 
         <div className="aspect-video mb-8 p-2 sm:px-10 md:px-32">
-          {trailers.length > 0 && (
+          {trailers?.length > 0 && (
             <ReactPlayer
               controls={true}
               width={"100%"}
@@ -369,7 +371,7 @@ const WatchPage = () => {
           ) : null}
         </div>
 
-        {similarContent.length > 0 && (
+        {similarContent?.length > 0 && (
           <div className="mt-12 max-w-5xl mx-auto relative">
             <h3 className="text-3xl font-bold mb-4">Similar Movies/Tv Show</h3>
 

@@ -8,12 +8,12 @@ const generateToken = (_id, res) => {
     },
     ENV_VARS.JWT_PW,
     {
-      expiresIn: "7d",
+      expiresIn: 60,
     }
   );
   res.cookie("Jwt", token, {
     httpOnly: true,
-    maxAge: 7 * 24 * 60 * 60 * 1000,
+    maxAge: 60 * 1000,
     sameSite: "strict",
     secure:  ENV_VARS.NODE_ENV !== "development",
   });
