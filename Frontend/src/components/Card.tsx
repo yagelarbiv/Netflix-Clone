@@ -82,6 +82,7 @@ function Card({ movieData, isLiked = false }: { movieData: Movie | TvShow, isLik
       />
 
       {isHovered && (
+        //Description size
         <div className="z-10 h-max w-80 absolute -top-[18vh] left-0 rounded-[0.3rem] bg-[#181818] transition-all duration-300 ease-in-out">
           <div className="relative h-[140px]">
             <img

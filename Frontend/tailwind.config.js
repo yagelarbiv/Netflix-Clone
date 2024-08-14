@@ -5,7 +5,16 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+
+      scale: {
+        '200': '2',    // Custom scale value for 200%
+        '600': '6', // Custom scale value for 175%
+      },
+
+      
+
+    },
   },
   plugins: [],
 }
