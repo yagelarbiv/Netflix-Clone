@@ -154,7 +154,7 @@ function ForgotPassword() {
                   htmlFor="email"
                   className="block text-gray-700 font-medium mb-2"
                 >
-                  We will send you an email with instructions on how to reset
+                  We will send you an email with code to reset
                   your password.
                 </label>
                 <input
