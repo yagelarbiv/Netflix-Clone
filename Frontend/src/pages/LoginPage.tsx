@@ -18,7 +18,6 @@ const LoginPage = () => {
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(email, password);
     login({ email, password });
     navigate("/");
   };

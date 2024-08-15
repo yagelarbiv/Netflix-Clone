@@ -6,10 +6,11 @@ import { Movie, TvShow } from "../pages/home/HomeScreen";
 import { AxiosUsersInstance } from "../axios";
 
 export interface User {
-	_id: '',
-	username: '',
-  email: '',
-	profilePicture: '',
+	_id: string,
+	username: string,
+  email: string,
+  password: string,
+	profilePicture: string,
   isAdmin: false,
 	myList: (Movie | TvShow)[],
 }
@@ -26,7 +27,7 @@ interface AuthStore {
   logout: () => Promise<void>;
   authCheck: () => Promise<void>;
   update: (user: User) => Promise<void>;
-  generatepassword: (email: string, code: string) => Promise<void>;
+  forgotPassword: (email: string|undefined, phoneNumber: string|undefined, code: string) => Promise<void>;
 }
 
 const useAuthStore = create<AuthStore>((set) => ({
@@ -40,13 +41,13 @@ const useAuthStore = create<AuthStore>((set) => ({
     set({ isSigningUp: true });
     try {
       const response = await AxiosUsersInstance.post("/signup", credentials);
-      console.log(response);
       Cookie.set("Jwt", JSON.stringify(response.data.token));
       console.log(Cookie.get("Jwt"));
       const user: User = {
         _id: response.data._id,
         email: response.data.email,
         username: response.data.username,
+        password: response.data.password,
         profilePicture: response.data.profilePicture,
         isAdmin: response.data.isAdmin,
         myList: response.data.myList,
@@ -56,18 +57,19 @@ const useAuthStore = create<AuthStore>((set) => ({
       toast.success("Account created successfully");
     } catch (error: unknown) {
 			const axiosError = error as AxiosError;
-			toast.error((axiosError.response?.data as { message: string }).message || "Signup failed");		
+			console.log((axiosError.response?.data as { message: string }).message || "Signup failed");
+      set({ isSigningUp: false });
 		}
   },
   login: async (credentials: unknown) => {
     set({ isLoggingIn: true });
     try {
       const response = await AxiosUsersInstance.post("/login", credentials);
-      console.log(response);
       Cookie.set("Jwt", response.data.token);
       const user = {
         _id: response.data._id,
         email: response.data.email,
+        password: response.data.password,
         username: response.data.username,
         profilePicture: response.data.profilePicture,
         isAdmin: response.data.isAdmin,
@@ -78,7 +80,8 @@ const useAuthStore = create<AuthStore>((set) => ({
       set({ user: response.data, isLoggingIn: false, token: response.data.token });
     } catch (error: unknown) {
 			const axiosError = error as AxiosError;
-			toast.error((axiosError.response as unknown as { message: string }).message || "Login failed");
+			console.log((axiosError.response as unknown as { message: string }).message || "Login failed");
+      set({ isLoggingIn: false });
     }
   },
   logout: async () => {
@@ -94,7 +97,7 @@ const useAuthStore = create<AuthStore>((set) => ({
     } catch (error: unknown) {
 			const axiosError = error as AxiosError;
       console.log(error);
-			toast.error((axiosError.response?.data as { message: string }).message || "Logout failed");
+			console.log((axiosError.response?.data as { message: string }).message || "Logout failed");
     }
   },
   authCheck: async () => {
@@ -118,7 +121,7 @@ const useAuthStore = create<AuthStore>((set) => ({
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       console.log(error);
-      toast.error((axiosError as { message: string }).message || "refresh failed");
+      console.log((axiosError as { message: string }).message || "refresh failed");
       set({ isCheckingAuth: false });
     }
   },
@@ -134,21 +137,35 @@ const useAuthStore = create<AuthStore>((set) => ({
       const axiosError = error as AxiosError;
       console.log("Error updating user:", axiosError);
       console.log("Response data:", axiosError.response?.data);
-      toast.error((axiosError.response?.data as { message: string }).message || "update failed");
     }
   },
-  generatepassword: async (email: string, code: string) => {
-    try {
-      const response = await AxiosUsersInstance.post("/forgot-password",{
-        email: email,
-        code: code
-      });
-      toast.success(response.data.message || "generate password successful");
-    } catch (error: unknown) {
-      const axiosError = error as AxiosError;
-      console.log("Error generating password:", axiosError);
-      console.log("Response data:", axiosError.response?.data);
-      toast.error((axiosError.response?.data as { message: string }).message || "generate password failed");
+  forgotPassword: async (email: string|undefined, phoneNumber: string|undefined, code: string) => {
+    if(!email && !phoneNumber) return;
+    if(email !== undefined){  
+      try {
+        const response = await AxiosUsersInstance.post("/forgot-password",{
+          email: email,
+          code: code
+        });
+        toast.success(response.data.message || "generate password successful");
+      } catch (error: unknown) {
+        const axiosError = error as AxiosError;
+        console.log("Error generating password:", axiosError);
+        console.log("Response data:", axiosError.response?.data);
+      }
+    }
+    if(phoneNumber !== undefined){
+      try {
+        const response = await AxiosUsersInstance.post("/forgot-password",{
+          phoneNumber: phoneNumber,
+          code: code
+        });
+        toast.success(response.data.message || "generate password successful");
+      } catch (error: unknown) {
+        const axiosError = error as AxiosError;
+        console.log("Error generating password:", axiosError);
+        console.log("Response data:", axiosError.response?.data);
+      }
     }
   }
 }));

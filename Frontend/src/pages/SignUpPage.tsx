@@ -11,17 +11,14 @@ type errors = {
 const SignUpPage = () => {
   const searchParams = new URLSearchParams(window.location.search);
   const emailValue = searchParams.get("email");
-
   const [email, setEmail] = useState<string>(emailValue || "");
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
-
   const signup = useAuthStore((state: { signup: (credentials: unknown) => Promise<void>; }) => state.signup);
 
   const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(email, username, password);
     signup({ email, username, password });
     navigate("/");
   };

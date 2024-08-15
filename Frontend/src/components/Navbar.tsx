@@ -7,9 +7,7 @@ import { useContentStore } from "../store/content";
 const Navbar = () => {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 	const { user, logout } = useAuthStore();
-
 	const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
-
 	const { setContentType } = useContentStore() as { setContentType: (type: string) => void };
 
 	return (

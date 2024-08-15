@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import useAuthStore from "../store/authUser";
 
 const countryCodes = [
   {
@@ -88,16 +89,35 @@ function ForgotPassword() {
   const [resetOption, setResetOption] = useState<string>("email");
   const [email, setEmail] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
-  const [countryCode, setCountryCode] = useState<string>("+421");
+  const [countryCode, setCountryCode] = useState<string>("+972");
+  const [code, setCode] = useState<string>("");
+  const navigate = useNavigate();
+  const { forgotPassword } = useAuthStore() as { forgotPassword: (email: string|undefined, phoneNumber: string|undefined, code: string) => void };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission logic here
-
+    const phone = `${countryCode}${phoneNumber}`;
+    const codeGenerated = (Math.floor(1000 + Math.random() * 9000)).toString();
+    setCode(codeGenerated);
+    if(resetOption === "email") {
+      try {
+        forgotPassword(email, undefined, codeGenerated);
+        navigate("/changePassword", {state: {GeneratedCode: code}});
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    else{
+      try {
+        forgotPassword(undefined, phone, codeGenerated);
+        navigate("/changePassword", {state: {code: code}});
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
-
   return (
-    <div className="w-full contain hero-bg">
+    <div className="w-full contain forgot-Password">
       <header className="max-w-6xl mx-auto flex items-center justify-between p-4">
         <Link to={"/"}>
           <img src="/netflix-logo.png" alt="logo" className="w-52" />

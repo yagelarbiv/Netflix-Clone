@@ -11,6 +11,7 @@ const useGetTrendingContent = () => {
 	const [trailer, setTrailer] = useState<Trailer>();
 	const { contentType, getContent } = useContentStore() as { contentType: string, getContent: (url: string, token: string) => Promise<AxiosResponse | Error | undefined> };
 	const { token, authCheck } = useAuthStore() as { token: string, authCheck: () => Promise<void> }; 
+	
 	const reDoFunction = async (func: (url: string, token: string) => Promise<AxiosResponse | Error | undefined>, url: string) => {
 		try {
 			authCheck();

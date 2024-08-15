@@ -16,7 +16,7 @@ const FooterItems: string[] = [
 ]
 const Footer = () => {
   return (
-		<footer className="flex flex-col w-full min-h-96 px-8 md:px-8 md:py-0 bg-black text-white border-t border-gray-800">
+		<footer className="flex flex-col w-full min-h-96 px-8 md:px-8 md:py-0 bg-black text-white border-gray-800">
 		<div className="h-screen items-center mt-10 justify-between gap-4 md:h-24 md:flex-row">
 			<p className="text-balance text-center mb-10 text-sm leading-loose text-muted-foreground md:text-left">
 				Built by{" "}

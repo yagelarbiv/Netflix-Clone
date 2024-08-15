@@ -55,7 +55,6 @@ const SearchPage = () => {
         }
       } else {
         console.error(error);
-        toast.error("An unknown error occurred");
       }
 		}
 	};

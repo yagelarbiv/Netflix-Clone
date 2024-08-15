@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
-import { generateToken, sendMail } from "../utils.js";
+import { generateToken, sendMail, sendSMS } from "../utils.js";
 import {
   validateSignInRequest,
   validateSignUpRequest,
@@ -84,10 +84,11 @@ const updateUser = async (req, res) => {
 };
 
 const forgotPassword = async (req, res) => {
-  const { email, code } = req.body;
+  const { phoneNumber, email, code } = req.body;
   const user = await User.findOne({ email });
   if (user) {
     const message = `your password reset code is ${code}`
+    if(email !== undefined){
     try {
         await sendMail({
             email: user.email,
@@ -99,8 +100,26 @@ const forgotPassword = async (req, res) => {
             message: "code sent successfully"
         });
     } catch (error) {
+      console.log(error);
       res.send({ success: false, message: "Email not sent" });
     }
+  }
+  else {
+    try {
+      await sendSMS({
+          phone: phoneNumber,
+          subject: "password change request received",
+          message: message
+      })
+      res.status(200).send({
+          status: 'success',
+          message: "code sent successfully"
+      });
+    } catch (error) {
+      console.log(error);
+      res.send({ success: false, message: "Email not sent" });
+    }
+  }
   } else {
     res.status(401).send({ message: "user not found" });
   }

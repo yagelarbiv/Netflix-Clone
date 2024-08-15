@@ -34,8 +34,6 @@ const WatchPage = () => {
     authCheck: () => Promise<void>;
   };
   const sliderRef = useRef<HTMLDivElement>(null);
-
-
   const [isHovered, setIsHovered] = useState<boolean>(false)
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);

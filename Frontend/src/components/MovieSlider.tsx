@@ -133,22 +133,14 @@ const MovieSlider = ({
       >
         {Array.isArray(content) && content.length > 0 ?
           (content.map((item: Movie | TvShow) => (
-            
-            
             <Link
               to={`/watch/${item.id}`}
               className="min-w-[250px] relative group" //Card size
               key={item.id}
             >
-              
-
-
               <div className="rounded-lg overflow-hidden transition-transform duration-300 transform group-hover:scale-y-600 group-hover:scale-x-200">
                 <Card movieData={item} />
               </div>
-
-
-
               <p className="mt-2 text-center">
                 {(item as Movie).title || (item as TvShow).name}
               </p>
