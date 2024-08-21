@@ -1,0 +1,21 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+
+      scale: {
+        '200': '2',    // Custom scale value for 200%
+        '600': '6', // Custom scale value for 175%
+      },
+
+      
+
+    },
+  },
+  plugins: [],
+}
+
