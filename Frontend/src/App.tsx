@@ -13,6 +13,10 @@ import NotFoundPage from "./pages/404";
 import UserList from "./pages/UserList";
 import NewAndPopularPage from "./pages/New&PopularPage";
 import Home from './pages/Home';
+import PlanPage from "./pages/PlanPage";
+import PaymentPickerPage from "./pages/PaymentPickerPage";
+import RegistrationPage from "./pages/RegistrationPage";
+import CreditOptionPage from "./pages/CreditOptionPage";
 
 function App() {
 	const { user, isCheckingAuth, authCheck } = useAuthStore();
@@ -36,7 +40,11 @@ function App() {
 			<Routes>
 				<Route path='/' element={<HomePage />} />
 				<Route path='/login' element={!user ? <LoginPage /> : <Navigate to={"/"} />} />
+				<Route path='/registration' element={!user ? <RegistrationPage /> : <Navigate to={"/"} />} />
 				<Route path='/signup' element={!user ? <SignUpPage /> : <Navigate to={"/"} />} />
+				<Route path='/plan' element={!user ? <PlanPage /> : <Navigate to={"/"} />} />
+				<Route path='/paymentpicker' element={!user ? <PaymentPickerPage /> : <Navigate to={"/"} />} />
+				<Route path='/creditoption' element={!user ? <CreditOptionPage/> : <Navigate to={"/"} />} />
 				<Route path='/watch/:id' element={user ? <WatchPage /> : <Navigate to={"/login"} />} />
 				<Route path='/search' element={user ? <SearchPage /> : <Navigate to={"/login"} />} />
 				<Route path="/myList" element={user ? <UserList /> : <Navigate to={"/login"} />} />

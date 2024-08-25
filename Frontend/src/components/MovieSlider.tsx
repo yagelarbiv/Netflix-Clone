@@ -141,7 +141,7 @@ const MovieSlider = ({
               
 
 
-              <div className="rounded-lg overflow-hidden transition-transform duration-300 transform group-hover:scale-y-600 group-hover:scale-x-200">
+              <div className="z-50 rounded-lg overflow-hidden transition-transform duration-300 transform group-hover:scale-y-150 group-hover:scale-x-150">
                 <Card movieData={item} />
               </div>
 

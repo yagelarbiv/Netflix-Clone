@@ -70,20 +70,20 @@ function Card({ movieData, isLiked = false }: { movieData: Movie | TvShow, isLik
 
   return (
     <div
-      className='max-w-500 w-500 h-full cursor-pointer relative'
+      className='relative max-w-500 w-500 h-full cursor-pointer'
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <img
         src={`https://image.tmdb.org/t/p/w500${(movieData as Movie).backdrop_path || (movieData as TvShow).poster_path}`}
         alt="card"
-        className="rounded-[0.2rem] w-full h-full z-10"
+        className="rounded-[0.2rem] w-full h-full z-50"
         onClick={() => navigate(`/watchlist/${(movieData as Movie).id || (movieData as TvShow).id}`)}
       />
 
       {isHovered && (
         //Description size
-        <div className="z-10 h-max w-80 absolute -top-[18vh] left-0 rounded-[0.3rem] bg-[#181818] transition-all duration-300 ease-in-out">
+        <div className="z-50 h-max w-80 absolute -top-[18vh] left-0 rounded-[0.3rem] bg-[#181818] transition-all duration-300 ease-in-out">
           <div className="relative h-[140px]">
             <img
               src={`https://image.tmdb.org/t/p/w500${(movieData as Movie).backdrop_path || (movieData as TvShow).poster_path}`}
