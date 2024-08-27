@@ -2,12 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { useContentStore } from "../store/content";
 import { Link } from "react-router-dom";
 import { SMALL_IMG_BASE_URL } from "../utils/constants";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader } from "lucide-react";
 import { Movie, TvShow } from "../pages/home/HomeScreen";
 import { AxiosContentInstance } from "../axios";
-import { AxiosError } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import useAuthStore from "../store/authUser";
-import Card from "./Card";
 
 const MovieSlider = ({
   category,
@@ -18,51 +17,43 @@ const MovieSlider = ({
   contType: string;
   title?: string;
 }) => {
-  const { contentType } = useContentStore() as { contentType: string };
+  const { contentType, getContent } = useContentStore() as { contentType: string, getContent: (url: string, token: string) => Promise<AxiosResponse | undefined> };
   const [content, setContent] = useState<(Movie | TvShow)[]>([]);
   const [showArrows, setShowArrows] = useState(false);
-  const { token } = useAuthStore() as { token: string };
-  // const [showHover, setShowHover] = useState(false);
+  const { token, authCheck } = useAuthStore() as { token: string, authCheck: () => Promise<void> };
 
   const sliderRef = useRef<HTMLDivElement>(null);
 
   const formattedCategoryName =
     category.replaceAll("_", " ")[0].toUpperCase() +
     category.replaceAll("_", " ").slice(1);
-  const formattedContentType = !(
-    contType.includes("empty") || contType.includes("all")
-  )
-    ? contentType === "movie"
-      ? "Movie"
-      : "TV Show"
-    : contType;
+  const formattedContentType = (contType.includes("empty") || contType.includes("all")) ? contentType === "movie" ? "Movie" : "TV Show" : contType;
+    const reDoFunction = async (func: (url: string, token: string) => Promise<AxiosResponse | undefined>, url: string) => {
+      try {
+        authCheck();
+        const response = await func(url, token);
+        if (response instanceof Error) {
+          console.error(response);
+        } else {
+          setContent(response?.data.content);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }; 
 
   useEffect(() => {
-    const getContent = async () => {
+    const getContentfromAxios = async () => {
       try {
-        const res = await AxiosContentInstance.get(
-          `/${category}/${contType.includes("empty") || contType.includes("all")
-            ? contentType
-            : contType
-          }`,
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setContent(res.data.content);
+        const response = await getContent(`${category}/${contType.includes("empty") || contType.includes("all") ? contentType : contType}`, token);
+          setContent(response?.data.content);
+
       } catch (error) {
         if (error instanceof AxiosError) {
-          if (error.response?.data?.message === "Unathorized - Invalid token") {
-            setContent([]);
-            return;
-          } else {
-            console.error(error);
-            setContent([]);
-          }
+          console.error(error);
+				if (error instanceof Error) {
+					reDoFunction(getContent, `${category}/${contType.includes("empty") || contType.includes("all") ? contentType : contType}`);
+				}
         }
       }
     };
@@ -79,7 +70,6 @@ const MovieSlider = ({
             },
           }
         );
-        console.log(res)
         setContent(res.data.content);
       } catch (error) {
         if (error instanceof AxiosError) {
@@ -96,9 +86,20 @@ const MovieSlider = ({
     if (contType === "all") {
       getAllContent();
     } else {
-      getContent();
+      getContentfromAxios();
     }
   }, [contentType, category, token, contType]);
+
+      
+  if(!token){
+    return(
+      <div className='h-screen'>
+      <div className='flex justify-center items-center bg-black h-full'>
+        <Loader className='animate-spin text-red-600 size-10' />
+      </div>
+    </div>
+    );
+  }
 
   const scrollLeft = () => {
     if (sliderRef.current) {
@@ -131,22 +132,20 @@ const MovieSlider = ({
       >
         {Array.isArray(content) && content.length > 0 ?
           (content.map((item: Movie | TvShow) => (
-            
-            
             <Link
               to={`/watch/${item.id}`}
               className="min-w-[250px] relative group" //Card size
               key={item.id}
             >
-              
-
-
-              <div className="z-50 rounded-lg overflow-hidden transition-transform duration-300 transform group-hover:scale-y-150 group-hover:scale-x-150">
-                <Card movieData={item} />
-              </div>
-
-
-
+              <img
+                src={`https://image.tmdb.org/t/p/w500${
+                  (item as Movie).backdrop_path ||
+                  (item as TvShow).poster_path
+                }`}
+                alt="card"
+                className="rounded-[0.2rem] w-100 h-100 z-10"
+                
+              />
               <p className="mt-2 text-center">
                 {(item as Movie).title || (item as TvShow).name}
               </p>

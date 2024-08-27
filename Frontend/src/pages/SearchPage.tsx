@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useContentStore } from "../store/content";
 import Navbar from "../components/Navbar";
-import { Search } from "lucide-react";
+import { Loader, Search } from "lucide-react";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 import { ORIGINAL_IMG_BASE_URL } from "../utils/constants";
@@ -55,10 +55,19 @@ const SearchPage = () => {
         }
       } else {
         console.error(error);
-        toast.error("An unknown error occurred");
       }
 		}
 	};
+
+  if(!token){
+    return(
+      <div className='h-screen'>
+      <div className='flex justify-center items-center bg-black h-full'>
+        <Loader className='animate-spin text-red-600 size-10' />
+      </div>
+    </div>
+    );
+  }
 
 	return (
 		<div className='bg-black min-h-screen text-white'>

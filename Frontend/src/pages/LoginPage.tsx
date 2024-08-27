@@ -18,7 +18,6 @@ const LoginPage = () => {
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(email, password);
     login({ email, password });
     navigate("/");
   };
@@ -48,7 +47,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className=" w-full hero-bg">
+    <div className="w-full hero-bg">
       <header className="max-w-6xl mx-auto flex items-center justify-between p-4">
         <Link to={"/"}>
           <img src="/netflix-logo.png" alt="logo" className="w-52" />
@@ -111,6 +110,12 @@ const LoginPage = () => {
             Don't have an account?&nbsp;
             <Link to={"/signup"} className="text-red-500 hover:underline">
               Sign up
+            </Link>
+          </div>
+          <div className="text-center text-gray-400">
+            Don't remember your Password?&nbsp;
+            <Link to={"/forgot-password"} className="text-red-500 hover:underline">
+              Reset Here
             </Link>
           </div>
           <div className="text-center border border-r-2 border-gray-700 rounded-md bg-gray-600">

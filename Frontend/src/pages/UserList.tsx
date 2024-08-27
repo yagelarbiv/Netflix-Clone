@@ -1,13 +1,13 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
 import { SMALL_IMG_BASE_URL } from "../utils/constants";
-import { Trash } from "lucide-react";
+import { Loader, Trash } from "lucide-react";
 import useAuthStore, { User } from "../store/authUser";
 import { Movie, TvShow } from "./home/HomeScreen";
 import { Link } from "react-router-dom";
 
 const UserList = () => {
-  const { user, update } = useAuthStore() as { user: User, update: (user: User) => Promise<void> };
+  const { user, update, token } = useAuthStore() as { user: User, update: (user: User) => Promise<void>, token: string | null };
   const [myList, setMyList] = useState<(Movie | TvShow)[]>(user.myList);
 
 
@@ -31,6 +31,16 @@ const UserList = () => {
 			</div>
 		);
 	}
+
+  if(!token){
+    return(
+      <div className='h-screen'>
+      <div className='flex justify-center items-center bg-black h-full'>
+        <Loader className='animate-spin text-red-600 size-10' />
+      </div>
+    </div>
+    );
+  }
 
 	return (
 		<div className='bg-black text-white min-h-screen'>
