@@ -16,10 +16,9 @@ const FooterItems: string[] = [
 ]
 const Footer = () => {
 	const footer = localStorage.getItem("footer")?.toString();
-	const [theme, text] = footer?.split(",") ?? []; // returns an empty array if footer is null
-	console.log(theme.split(":")[1], text.split(":")[1]);
+	const [theme, text] = JSON.stringify(footer || "{}"); // returns an empty array if footer is null
   return (
-		<footer className={`flex flex-col w-full min-h-80 md:px-8 md:py-0 bg-${theme.split(":")[1]} text-${text.split(":")[1]} border-gray-800`}>
+		<footer className={`flex flex-col w-full min-h-80 md:px-8 md:py-0 bg-${theme} text-${text} border-gray-800`}>
 		<div className="h-screen items-center mt-10 justify-between gap-4 md:h-24 md:flex-row">
 			<p className="text-balance text-center text-sm leading-loose text-muted-foreground md:text-left">
 				Built by{" "}
