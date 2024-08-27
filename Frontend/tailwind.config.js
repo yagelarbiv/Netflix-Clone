@@ -11,9 +11,7 @@ export default {
         '200': '2',    // Custom scale value for 200%
         '300': '3', 
       },
-
       
-
     },
   },
   plugins: [],

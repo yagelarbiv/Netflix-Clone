@@ -47,9 +47,9 @@ const PlanPage = () => {
             <SignUpNavbar />
 
             <div className="min-h-screen bg-white flex flex-col items-center p-8">
-                <div className="text-left">
-                    <h2 className="text-lg font-medium text-gray-500">STEP 2 OF 3</h2>
-                    <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mt-2">
+                <div className="text-left mr-auto ml-60 mt-5">
+                    <h4 className="text-sm text-gray-500">STEP 2 OF 3</h4>
+                    <h1 className="text-2xl md:text-4xl font-semibold text-gray-900 mt-2">
                         Choose the plan that's right for you
                     </h1>
                 </div>
@@ -59,7 +59,7 @@ const PlanPage = () => {
                         <div
                             key={plan.name}
                             onClick={() => setSelectedPlan(plan.name)}
-                            className={`w-full md:w-1/4 cursor-pointer bg-white border-2 rounded-2xl p-6 flex flex-col justify-between shadow-md transition-transform transform ${selectedPlan === plan.name
+                            className={`w-full md:w-1/3 cursor-pointer bg-white border-2 rounded-2xl p-6 flex flex-col justify-between shadow-md transition-transform transform ${selectedPlan === plan.name
                                 ? 'border-red-500 scale-105'
                                 : 'border-gray-300'
                                 } relative min-h-[600px]`}
