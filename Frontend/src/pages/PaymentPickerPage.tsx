@@ -14,7 +14,7 @@ const PaymentPickerPage = () => {
                             <img src="/LockLogo.png" alt="Check mark logo" className="w-16 mb-5" />
                         </div>
 
-                        <h2 className="text-gray-500 text-sm font-semibold">STEP 3 OF 3</h2>
+                        <h2 className="text-gray-500 text-sm font-semibold">STEP 2 OF 3</h2>
                         <h1 className="mt-2 text-2xl font-semibold">Choose how to pay</h1>
                         <p className="mt-2 text-gray-500">Your payment is encrypted and you can change how you pay anytime.</p>
                         <p className="mt-4 text-sm font-semibold text-gray-800">Secure for peace of mind.<br />Cancel easily online.</p>

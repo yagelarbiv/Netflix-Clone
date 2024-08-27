@@ -114,12 +114,13 @@ const PlanPage = () => {
                     </p>
                 </div>
 
-                <button
-                    className="w-96 h-14 mt-12 bg-red-600 text-white text-lg font-semibold py-3 px-12 rounded-md hover:bg-red-700 transition"
-                    onClick={() => alert(`You selected the ${selectedPlan} plan`)}
-                >
-                    Next
-                </button>
+                <Link to='/paymentpicker'>
+                    <button
+                        className="w-96 h-14 mt-12 bg-red-600 text-white text-lg font-semibold py-3 px-12 rounded-md hover:bg-red-700 transition"
+                    >
+                        Next
+                    </button>
+                </Link>
             </div>
         </>
     )

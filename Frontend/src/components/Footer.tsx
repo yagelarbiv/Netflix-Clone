@@ -15,10 +15,13 @@ const FooterItems: string[] = [
 	"Legal Guarantee",
 ]
 const Footer = () => {
+	const footer = localStorage.getItem("footer")?.toString();
+	const [theme, text] = footer?.split(",") ?? []; // returns an empty array if footer is null
+	console.log(theme.split(":")[1], text.split(":")[1]);
   return (
-		<footer className="flex flex-col w-full min-h-96 px-8 md:px-8 md:py-0 bg-black text-white border-gray-800">
+		<footer className={`flex flex-col w-full min-h-80 md:px-8 md:py-0 bg-${theme.split(":")[1]} text-${text.split(":")[1]} border-gray-800`}>
 		<div className="h-screen items-center mt-10 justify-between gap-4 md:h-24 md:flex-row">
-			<p className="text-balance text-center mb-10 text-sm leading-loose text-muted-foreground md:text-left">
+			<p className="text-balance text-center text-sm leading-loose text-muted-foreground md:text-left">
 				Built by{" "}
 				<a
 					href="https://github.com/yagelarbiv"
@@ -41,12 +44,12 @@ const Footer = () => {
 			</p>
 		<div>
 			<div>
-				<p className="text-white underline mb-5" >Questions? Contact us.</p>
+				<p className=" underline mb-5" >Questions? Contact us.</p>
 			</div>
 		<ul className="grid grid-cols-2 md:grid-cols-4 gap-4">
 			{FooterItems.map((item, index) => (
 				<li key={index}>
-					<a href="#" className="text-white underline">
+					<a href="#" className=" underline">
 						{item}
 					</a>
 				</li>

@@ -9,8 +9,11 @@ type errors = {
 }
 
 const SignUpPage = () => {
-  const searchParams = new URLSearchParams(window.location.search);
-  const emailValue = searchParams.get("email");
+  const emailValue = localStorage.getItem("email")?.toString();
+  localStorage.setItem("footer", JSON.stringify({
+    theme: "white",
+    text: "gray",
+  }));
 
   const [email, setEmail] = useState<string>(emailValue || "");
   const [password, setPassword] = useState<string>("");
@@ -20,9 +23,12 @@ const SignUpPage = () => {
 
   const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(email, password);
+    localStorage.setItem("user",JSON.stringify({
+      email, 
+      password
+    }));
     signup({ email, password });
-    navigate("/");
+    navigate("/chooseplan");
   };
 
   const validate = ({ email, password }: { email: string, password: string }) => {
@@ -41,11 +47,11 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center w-full h-screen bg-white text-black">
+    <div className="flex flex-col items-center w-full bg-white text-black">
 
       <SignUpNavbar />
 
-      <div className="flex flex-col items-center w-full max-w-lg p-8">
+      <div className="flex flex-col items-center border-2 border-gray-300 rounded-lg w-full max-w-lg p-8 mb-5">
 
         <div className="mr-4">
           <h2 className="text-sm font-medium text-gray-500">STEP 1 OF 3</h2>

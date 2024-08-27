@@ -1,7 +1,22 @@
 import { Link } from "react-router-dom"
-import SignUpNavbar from "../components/SignUpNavbar"
+import SignUpNavbar from "../components/SignUpNavbar";
+import { useNavigate } from "react-router-dom";
+import useAuthStore from '../store/authUser';
 
 const CreditOptionPage = () => {
+  const signup = useAuthStore((state: { signup: (credentials: unknown) => Promise<void>; }) => state.signup);
+  const user = localStorage.getItem("user")?.toString();
+  const { email, password } = JSON.parse(user || "{}");
+  const navigate = useNavigate();
+
+  const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+
+      
+      console.log(email, password);
+      signup({ email, password });
+      navigate("/");
+  }
   return (
     <>
       
@@ -17,7 +32,7 @@ const CreditOptionPage = () => {
           <img src="amex.png" alt="Amex" className="h-8" />
         </div>
 
-        <form>
+        <form onSubmit={handleSignUp}>
           <div className="mb-4">
             <input
               type="text"

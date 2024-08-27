@@ -1,6 +1,21 @@
-import SignUpNavbar from "../components/SignUpNavbar"
+import { useNavigate } from "react-router-dom";
+import SignUpNavbar from "../components/SignUpNavbar";
+import useAuthStore from '../store/authUser';
 
 const PayPalOptionPage = () => {
+    const signup = useAuthStore((state: { signup: (credentials: unknown) => Promise<void>; }) => state.signup);
+    const user = localStorage.getItem("user")?.toString();
+    const { email, password } = JSON.parse(user || "{}");
+    const navigate = useNavigate();
+
+    const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        
+        console.log(email, password);
+        signup({ email, password });
+        navigate("/");
+    }
     return (
         <>
 
@@ -17,7 +32,7 @@ const PayPalOptionPage = () => {
                     <p className="text-gray-600 mt-2">Enter your email or mobile number to get started.</p>
                 </div>
 
-                <form>
+                <form onSubmit={handleSignUp}>
                     <div className="mb-4">
                         <input
                             type="email"

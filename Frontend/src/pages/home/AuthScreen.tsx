@@ -51,7 +51,8 @@ const AuthScreen = () => {
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    navigate("/signup?email=" + email);
+    localStorage.setItem("email", email);
+    navigate("/registration?email");
   };
 
   return (

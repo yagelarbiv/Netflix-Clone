@@ -13,7 +13,7 @@ const ChoosePlanPage = () => {
 
                         <img src="/CheckMarkLogo.png" alt="Check mark logo" className="w-20 ml-24 mb-5" />
 
-                        <h2 className="text-gray-500 text-sm font-semibold">STEP 1 OF 3</h2>
+                        <h2 className="text-gray-500 text-sm font-semibold">STEP 2 OF 3</h2>
                         <h1 className="mt-2 text-3xl font-semibold">Choose your plan.</h1>
 
                         <div className="flex items-center">
