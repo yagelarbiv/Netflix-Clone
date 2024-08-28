@@ -26,7 +26,7 @@ app.use(cookieParser());
 
 //Microservices
 const auth = proxy("http://auth-service:5000")
-const content = proxy("http://content-service:6000")
+const content = proxy("http://localhost:6000")
 app.use('/api/v2/auth', auth);
 app.use('/api/v2/Content', content);
 
