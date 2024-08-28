@@ -38,6 +38,7 @@ const WatchPage = () => {
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
 
+  console.log(user?.myList);
   const reDoFunction = async (func: (url: string, token: string) => Promise<AxiosResponse | undefined>, url: string) => {
     try {
       authCheck();
@@ -123,7 +124,7 @@ const WatchPage = () => {
         catch (error){
           console.error(error);
           if (error instanceof Error) {
-            reDoFunction(getContent, `${contentType}/${id}/trailers`);
+            reDoFunction(getContent, `${contentType}/${id}/season/${season}`);
           }
         }
       }
@@ -204,6 +205,7 @@ const WatchPage = () => {
           <div className="flex justify-between items-center mb-4">
             <button
               title="Previous trailer"
+              type="button"
               className={`
 							bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded ${currentTrailerIdx === 0 ? "opacity-50 cursor-not-allowed " : ""
                 }}
@@ -216,6 +218,7 @@ const WatchPage = () => {
 
             <button
               title="Next trailer"
+              type="button"
               className={`
 							bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded ${currentTrailerIdx === trailers.length - 1
                   ? "opacity-50 cursor-not-allowed "
@@ -280,7 +283,7 @@ const WatchPage = () => {
               className="bg-red-600 text-white py-2 px-4 rounded mt-4"
               onClick={addToWatchList}
             >
-              {user?.myList.includes(content)
+              {user?.myList.map((item) => item.id).includes(content.id)
                 ? "Remove from My List"
                 : "Add to My List"}
             </button>
@@ -302,8 +305,8 @@ const WatchPage = () => {
               {Array.from(
                 { length: (content as TvShow).number_of_seasons },
                 (_, i) => (
-                  <option key={i + 1} value={i + 1}>
-                    season {i + 1}
+                  <option key={i} value={i}>
+                    season {i}
                   </option>
                 )
               )}
@@ -328,7 +331,7 @@ const WatchPage = () => {
                     <div className="relative">
                       <img
                         src={`https://image.tmdb.org/t/p/w500/${episode.still_path}`}
-                        alt="episode img"
+                        alt={`https://image.tmdb.org/t/p/w500/${(content as TvShow).poster_path}`}
                         className="w-96 h-64"
                         onMouseEnter={handleMouseEnter}
                         onMouseLeave={handleMouseLeave}
