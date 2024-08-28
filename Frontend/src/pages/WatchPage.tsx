@@ -116,7 +116,7 @@ const WatchPage = () => {
 
   useEffect(() => {
     const getSeasonDetails = async () => {
-      if (content && Object.keys(content).includes("number_of_seasons")) {
+      if (content && Object.keys(content).includes("number_of_seasons") && (content as TvShow)) {
         try {
           const res = await getContent(`${contentType}/${id}/season/${season}`, token);
           setSeasonDetails(res?.data.content);
