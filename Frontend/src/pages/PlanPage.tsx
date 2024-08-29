@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import SignUpNavbar from '../components/SignUpNavbar';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const PlanPage = () => {
     const [selectedPlan, setSelectedPlan] = useState<string>('Premium');
@@ -41,6 +41,19 @@ const PlanPage = () => {
             mostPopular: true,
         },
     ];
+
+
+    const navigate = useNavigate();
+
+    const handleNext = () => {
+        const selected = plans.find((plan) => plan.name === selectedPlan);
+        if (selected) {
+            sessionStorage.setItem('selectedPlanName', selected.name);
+            sessionStorage.setItem('selectedPlanPrice', selected.price);
+        }
+        navigate('/paymentpicker');
+    };
+
 
     return (
         <>
@@ -100,27 +113,25 @@ const PlanPage = () => {
                                 <hr />
                                 <li>Download devices <br />  {plan.download}</li>
                             </ul>
-
-
                         </div>
                     ))}
                 </div>
 
                 <div className='mt-10 text-sm'>
-                    <p>HD (720p), Full HD (1080p), Ultra HD (4K) and HDR availability subject to your internet service and device capabilities. Not all content is available in all resolutions. See our <br/>
-                       <Link to='' className='text-blue-700'>Terms of Use</Link>  for more details.<br/><br/>
+                    <p>HD (720p), Full HD (1080p), Ultra HD (4K) and HDR availability subject to your internet service and device capabilities. Not all content is available in all resolutions. See our <br />
+                        <Link to='' className='text-blue-700'>Terms of Use</Link>  for more details.<br /><br />
 
                         Only people who live with you may use your account. Watch on 4 different devices at the same time with Premium, 2 with Standard and 1 with Basic.
                     </p>
                 </div>
 
-                <Link to='/paymentpicker'>
-                    <button
-                        className="w-96 h-14 mt-12 bg-red-600 text-white text-lg font-semibold py-3 px-12 rounded-md hover:bg-red-700 transition"
-                    >
-                        Next
-                    </button>
-                </Link>
+
+                <button
+                     onClick={handleNext} className="w-96 h-14 mt-12 bg-red-600 text-white text-lg font-semibold py-3 px-12 rounded-md hover:bg-red-700 transition"
+                >
+                    Next
+                </button>
+
             </div>
         </>
     )

@@ -350,7 +350,6 @@ const WatchPage = () => {
                     </div>
 
 
-
                     <div className="ml-4 flex-1">
                       <p className="font-bold">
                         {episode.episode_number}. {episode.name}

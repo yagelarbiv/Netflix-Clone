@@ -10,10 +10,10 @@ const PayPalOptionPage = () => {
 
     const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
+        const username = email.split("@")[0];
         
         console.log(email, password);
-        signup({ email, password });
+        signup({ email, username, password });
         navigate("/");
     }
     return (

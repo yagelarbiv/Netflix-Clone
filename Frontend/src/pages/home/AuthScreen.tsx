@@ -50,9 +50,14 @@ const AuthScreen = () => {
   };
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    localStorage.setItem("email", email);
-    navigate("/registration?email");
+    if (email.trim() !== "") {
+      e.preventDefault();
+      localStorage.setItem("email", email);
+      navigate("/registration?email");
+    }
+    else {
+      alert("Please enter a valid email address.");
+    }
   };
 
   return (

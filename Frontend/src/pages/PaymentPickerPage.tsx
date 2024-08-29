@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom"
 import SignUpNavbar from "../components/SignUpNavbar"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faChevronRight } from "@fortawesome/free-solid-svg-icons"
 
 const PaymentPickerPage = () => {
     return (
@@ -36,7 +38,7 @@ const PaymentPickerPage = () => {
                                         <img src="mastercard.png" alt="MasterCard" className="h-6 ml-2" />
                                         <img src="amex.png" alt="Amex" className="h-6 ml-2" />
                                     </span>
-                                    <span>→</span>
+                                    <span><FontAwesomeIcon icon={faChevronRight} className="text-lg ml-16" /></span>
                                 </button>
                             </Link>
 
@@ -46,7 +48,7 @@ const PaymentPickerPage = () => {
                                         <span className="mr-3">PayPal</span>
                                         <img src="paypal.png" alt="PayPal" className="h-6" />
                                     </span>
-                                    <span>→</span>
+                                    <span><FontAwesomeIcon icon={faChevronRight} className="text-lg ml-16" /></span>
                                 </button>
                             </Link>
                         </div>

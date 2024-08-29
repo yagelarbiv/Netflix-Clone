@@ -2,6 +2,7 @@ import { Link } from "react-router-dom"
 import SignUpNavbar from "../components/SignUpNavbar";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from '../store/authUser';
+import { useEffect, useState } from "react";
 
 const CreditOptionPage = () => {
   const signup = useAuthStore((state: { signup: (credentials: unknown) => Promise<void>; }) => state.signup);
@@ -9,19 +10,31 @@ const CreditOptionPage = () => {
   const { email, password } = JSON.parse(user || "{}");
   const navigate = useNavigate();
 
-  const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
+  const [planName, setPlanName] = useState<string>('');
+  const [planPrice, setPlanPrice] = useState<string>('');
 
-      
-      console.log(email, password);
-      signup({ email, password });
-      navigate("/");
+  useEffect(() => {
+    const savedPlanName = sessionStorage.getItem('selectedPlanName');
+    const savedPlanPrice = sessionStorage.getItem('selectedPlanPrice');
+    if (savedPlanName && savedPlanPrice) {
+      setPlanName(savedPlanName);
+      setPlanPrice(savedPlanPrice);
+    }
+  }, []);
+
+  const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const username = email.split("@")[0];
+
+    console.log(email, password);
+    signup({ email, username, password });
+    navigate("/");
   }
   return (
     <>
-      
+
       <SignUpNavbar />
-      
+
       <div className="max-w-md mx-auto p-6 bg-white rounded-md mt-4">
         <h2 className="text-sm font-semibold mb-1">STEP 3 OF 3</h2>
         <h1 className="text-3xl font-bold mb-6">Set up your credit or debit card</h1>
@@ -64,17 +77,19 @@ const CreditOptionPage = () => {
 
           <div className="p-4 bg-gray-100 rounded-md mb-4">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-lg font-medium">USD 9.99/month</span>
-              <button className="text-blue-500 font-medium">Change</button>
+              <span className="text-lg font-medium">{planPrice}/month</span>
+              <Link to='/plan'>
+                <button className="text-blue-500 font-medium">Change</button>
+              </Link>
             </div>
-            <span className="text-sm text-gray-500">Premium</span>
+            <span className="text-sm text-gray-500">{planName}</span>
           </div>
 
           <div className="text-xs text-gray-500 mb-4">
             By checking the checkbox below, you agree to our
             <Link to="" className="text-blue-500 hover:underline"> Terms of Use</Link>,
             <Link to="" className="text-blue-500 hover:underline"> Privacy Statement</Link>, and that you are over 18. Netflix will automatically
-            continue your membership and charge the membership fee (currently USD 9.99/month) to your payment method until you cancel.
+            continue your membership and charge the membership fee ({planPrice}/month) to your payment method until you cancel.
             You may cancel at any time to avoid future charges.
           </div>
 
