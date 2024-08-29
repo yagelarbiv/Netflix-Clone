@@ -326,8 +326,8 @@ const WatchPage = () => {
               {Array.from(
                 { length: (content as TvShow).number_of_seasons },
                 (_, i) => (
-                  <option key={i} value={i}>
-                    season {i}
+                  <option key={i + 1} value={i + 1}>
+                    season {i + 1}
                   </option>
                 )
               )}
@@ -336,7 +336,9 @@ const WatchPage = () => {
 
           {Object.keys(content).includes("number_of_episodes") ? (
             <div>
-              {seasonDetails?.episodes.map((episode) => (
+              {seasonDetails?.episodes.map((episode) => {
+              const image = episode.still_path ? episode.still_path : (content as TvShow).poster_path
+                return (
                 <div
                   key={episode.id}
                   className="mt-4 text-lg border-gray-500/70 hover:bg-gray-500 p-2"
@@ -351,11 +353,9 @@ const WatchPage = () => {
                     </div>
                     <div className="relative">
                       <img
-                        src={`https://image.tmdb.org/t/p/w500/${episode.still_path}`}
-                        alt={`https://image.tmdb.org/t/p/w500/${
-                          (content as TvShow).poster_path
-                        }`}
-                        className="w-96 h-64"
+                        src={`https://image.tmdb.org/t/p/w500/${image}`}
+                        alt='episode image'
+                        className="w-96 h-64 object-contain"
                         onMouseEnter={handleMouseEnter}
                         onMouseLeave={handleMouseLeave}
                       />
@@ -395,7 +395,8 @@ const WatchPage = () => {
                   </div>
                   <hr className="mt-2" /> {/* Adjust margin-top */}
                 </div>
-              ))}
+                );
+              })}
             </div>
           ) : null}
         </div>

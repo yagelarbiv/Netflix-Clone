@@ -49,6 +49,8 @@ const AuthScreen = () => {
     setActiveIndex(activeIndex === index ? null : index);
   };
 
+  localStorage.removeItem("footer");
+
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     localStorage.setItem("email", email);
