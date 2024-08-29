@@ -142,6 +142,7 @@ const HomeScreen = () => {
   const { contentType } = useContentStore() as { contentType: string };
   const [imgLoading, setImgLoading] = useState(true);
 
+  localStorage.removeItem("footer");
 
   if (!trendingContent)
     return (

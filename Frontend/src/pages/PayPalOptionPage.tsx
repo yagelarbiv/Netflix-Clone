@@ -14,6 +14,7 @@ const PayPalOptionPage = () => {
         
         console.log(email, password);
         signup({ email, username, password });
+        signup({ email, username, password });
         navigate("/");
     }
     return (

@@ -15,6 +15,8 @@ const SignUpPage = () => {
     text: "gray",
   }));
 
+  console.log(localStorage.getItem("footer"))
+
   const [email, setEmail] = useState<string>(emailValue || "");
   const [password, setPassword] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>(""); // Track password error state
