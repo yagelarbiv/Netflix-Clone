@@ -316,6 +316,8 @@ const AuthScreen = () => {
                   type="email"
                   placeholder="Email address"
                   className="flex-grow w-full ml p-4 text-black rounded-md border bg-[rgb(25,25,25)] border-gray-400 focus:outline-none"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
                 <button className=" w-72 p-4 ml-2 bg-[rgb(229,9,20)] font-bold text-2xl text-white rounded-md hover:bg-red-700">
                   Get Started &rarr;

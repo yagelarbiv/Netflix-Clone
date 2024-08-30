@@ -10,12 +10,7 @@ type errors = {
 
 const SignUpPage = () => {
   const emailValue = localStorage.getItem("email")?.toString();
-  localStorage.setItem("footer", JSON.stringify({
-    theme: "white",
-    text: "gray",
-  }));
-
-  console.log(localStorage.getItem("footer"))
+ 
 
   const [email, setEmail] = useState<string>(emailValue || "");
   const [password, setPassword] = useState<string>("");
@@ -59,7 +54,7 @@ const SignUpPage = () => {
 
       <SignUpNavbar />
 
-      <div className="flex flex-col items-center rounded-lg w-full max-w-lg p-8 mb-5">
+      <div className="flex flex-col items-center rounded-lg w-full max-w-lg p-8 mt-14">
 
         <div className="mr-4">
           <h2 className="text-sm font-medium text-gray-500">STEP 1 OF 3</h2>

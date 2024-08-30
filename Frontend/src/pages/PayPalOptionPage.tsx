@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SignUpNavbar from "../components/SignUpNavbar";
 import useAuthStore from '../store/authUser';
@@ -8,18 +9,28 @@ const PayPalOptionPage = () => {
     const { email, password } = JSON.parse(user || "{}");
     const navigate = useNavigate();
 
+    const [inputValue, setInputValue] = useState<string>('');
+    const [errorMessage, setErrorMessage] = useState<string>('');
+
     const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        // Validate input
+        if (!inputValue) {
+            setErrorMessage("Please enter your email or mobile number.");
+            return;
+        }
+
         const username = email.split("@")[0];
         
+        // Proceed with signup if input is valid
         console.log(email, password);
         signup({ email, username, password });
-        signup({ email, username, password });
         navigate("/");
-    }
+    };
+
     return (
         <>
-
             <SignUpNavbar/>
 
             <div className="max-w-sm mx-auto p-6 bg-white shadow-md rounded-md mt-12">
@@ -38,9 +49,20 @@ const PayPalOptionPage = () => {
                         <input
                             type="email"
                             placeholder="Email or mobile number"
+                            value={inputValue}
+                            onChange={(e) => {
+                                setInputValue(e.target.value);
+                                setErrorMessage('');  // Clear error on input change
+                            }}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
+
+                    {errorMessage && (
+                        <div className="text-red-600 text-sm mb-4">
+                            {errorMessage}
+                        </div>
+                    )}
 
                     <div className="flex justify-between mb-4 text-blue-500">
                         <a href="#" className="text-sm hover:underline">Forgot email?</a>
@@ -80,7 +102,7 @@ const PayPalOptionPage = () => {
                 </div>
             </div>
         </>
-    )
-}
+    );
+};
 
-export default PayPalOptionPage
+export default PayPalOptionPage;
