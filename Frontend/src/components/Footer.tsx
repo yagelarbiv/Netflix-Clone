@@ -86,7 +86,8 @@ const FooterSpecial = () => {
           </ul>
         </div>
         <div className="relative flex items-center">
-          <select className="appearance-none cursor-pointer h-12 pl-8 pr-10 text-gray-500 bg-transparent border border-gray-300 rounded" onChange={(e) => window.location.href = e.target.value}>
+          <select className="appearance-none cursor-pointer h-12 pl-8 pr-10 text-gray-500 bg-transparent border border-gray-300 rounded" onChange={(e) => window.location.href = e.target.value}
+						title="Language">
             <option value="english" selected>English</option>
             <option value="">עברית</option>
           </select>
