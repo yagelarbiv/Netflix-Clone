@@ -11,7 +11,7 @@ const FooterDefault = () => {
   ];
 
   return (
-    <footer className={`flex flex-col w-full min-h-80 md:px-8 md:py-0 bg-black text-white border-gray-800`}>
+    <footer className={`flex flex-col w-full min-h-80 md:px-8 md:py-0 bg-black text-white border-gray-500`}>
       <div className="h-screen items-center mt-10 justify-between gap-4 md:h-24 md:flex-row">
         <p className="text-balance text-center text-sm leading-loose text-muted-foreground md:text-center">
           Built by{" "}
@@ -64,7 +64,7 @@ const FooterDefault = () => {
 
 const FooterSpecial = () => {
   return (
-    <footer className="bg-gray-100 border-t border-gray-200 py-7">
+    <footer className="bg-gray-100 border-t border-gray-500 py-7">
       <div className="max-w-screen-lg ml-20 px-4 grid gap-6 text-gray-500">
         <p>
           <a className="text-gray-600 text-xs hover:underline" href="">
