@@ -9,13 +9,13 @@ export default {
 
       scale: {
         '200': '2',    // Custom scale value for 200%
-        '600': '6', // Custom scale value for 175%
+        '300': '3', 
       },
-
       
-
     },
   },
-  plugins: [],
+  plugins: [
+  require('tailwind-scrollbar-hide')
+  ],
 }
 
