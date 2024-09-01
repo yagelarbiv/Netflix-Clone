@@ -118,7 +118,7 @@ const MovieSlider = ({
 
   return (
     <div
-      className="bg-black text-white relative px-5 md:px-20 flex flex-col gap-4 py-8"
+      className="bg-black text-white relative px-5 md:px-20"
       onMouseEnter={() => setShowArrows(true)}
       onMouseLeave={() => setShowArrows(false)}
     >
@@ -127,7 +127,7 @@ const MovieSlider = ({
       </h2>
 
       <div
-        className="flex space-x-4 overflow-x-scroll scrollbar-hide"
+        className="flex space-x-4 overflow-x-scroll scrollbar-hide overflow-hidden"
         ref={sliderRef}
       >
         {Array.isArray(content) && content.length > 0 ?
@@ -143,7 +143,7 @@ const MovieSlider = ({
                   (item as TvShow).poster_path
                 }`}
                 alt="card"
-                className="rounded-[0.2rem] w-100 h-100 z-10"
+                className="rounded-[0.2rem] w-100 h-100 z-10 transition-transform duration-300 ease-in-out group-hover:scale-110" //img size
                 
               />
               <p className="mt-2 text-center">

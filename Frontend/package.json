@@ -23,6 +23,7 @@
     "react-player": "^2.16.0",
     "react-router-dom": "^6.26.0",
     "remult": "^0.27.7",
+    "tailwind-scrollbar-hide": "^1.1.7",
     "zustand": "^4.5.4"
   },
   "devDependencies": {
