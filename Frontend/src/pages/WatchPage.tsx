@@ -26,7 +26,13 @@ const WatchPage = () => {
   const [seasonDetails, setSeasonDetails] = useState<Season>();
   const [similarContent, setSimilarContent] = useState([]);
   const [hover, setHover] = useState(false);
-  const { contentType, getContent } = useContentStore() as { contentType: string, getContent: (url: string, token: string) => Promise<AxiosResponse | undefined>; };
+  const { contentType, getContent } = useContentStore() as {
+    contentType: string;
+    getContent: (
+      url: string,
+      token: string
+    ) => Promise<AxiosResponse | undefined>;
+  };
   const { user, update, token, authCheck } = useAuthStore() as {
     user: User;
     update: (user: User) => Promise<void>;
@@ -34,11 +40,15 @@ const WatchPage = () => {
     authCheck: () => Promise<void>;
   };
   const sliderRef = useRef<HTMLDivElement>(null);
-  const [isHovered, setIsHovered] = useState<boolean>(false)
+  const [isHovered, setIsHovered] = useState<boolean>(false);
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
 
-  const reDoFunction = async (func: (url: string, token: string) => Promise<AxiosResponse | undefined>, url: string) => {
+  console.log(user?.myList);
+  const reDoFunction = async (
+    func: (url: string, token: string) => Promise<AxiosResponse | undefined>,
+    url: string
+  ) => {
     try {
       authCheck();
       const response = await func(url, token);
@@ -115,15 +125,21 @@ const WatchPage = () => {
 
   useEffect(() => {
     const getSeasonDetails = async () => {
-      if (content && Object.keys(content).includes("number_of_seasons")) {
+      if (
+        content &&
+        Object.keys(content).includes("number_of_seasons") &&
+        (content as TvShow)
+      ) {
         try {
-          const res = await getContent(`${contentType}/${id}/season/${season}`, token);
+          const res = await getContent(
+            `${contentType}/${id}/season/${season}`,
+            token
+          );
           setSeasonDetails(res?.data.content);
-        }
-        catch (error){
+        } catch (error) {
           console.error(error);
           if (error instanceof Error) {
-            reDoFunction(getContent, `${contentType}/${id}/trailers`);
+            reDoFunction(getContent, `${contentType}/${id}/season/${season}`);
           }
         }
       }
@@ -204,9 +220,11 @@ const WatchPage = () => {
           <div className="flex justify-between items-center mb-4">
             <button
               title="Previous trailer"
+              type="button"
               className={`
-							bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded ${currentTrailerIdx === 0 ? "opacity-50 cursor-not-allowed " : ""
-                }}
+							bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded ${
+                currentTrailerIdx === 0 ? "opacity-50 cursor-not-allowed " : ""
+              }}
 							`}
               disabled={currentTrailerIdx === 0}
               onClick={handlePrev}
@@ -216,11 +234,13 @@ const WatchPage = () => {
 
             <button
               title="Next trailer"
+              type="button"
               className={`
-							bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded ${currentTrailerIdx === trailers.length - 1
+							bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded ${
+                currentTrailerIdx === trailers.length - 1
                   ? "opacity-50 cursor-not-allowed "
                   : ""
-                }}
+              }}
 							`}
               disabled={currentTrailerIdx === trailers.length - 1}
               onClick={handleNext}
@@ -230,7 +250,11 @@ const WatchPage = () => {
           </div>
         )}
 
-        <div className="aspect-video mb-8 p-2 sm:px-10 md:px-32" onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
+        <div
+          className="aspect-video mb-8 p-2 sm:px-10 md:px-32"
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+        >
           {trailers?.length > 0 && (
             <ReactPlayer
               controls={true}
@@ -266,7 +290,7 @@ const WatchPage = () => {
             <p className="mt-2 text-lg">
               {formatReleaseDate(
                 (content as Movie)?.release_date ||
-                (content as TvShow)?.first_air_date
+                  (content as TvShow)?.first_air_date
               )}{" "}
               |{" "}
               {(content as Movie)?.adult ? (
@@ -280,7 +304,7 @@ const WatchPage = () => {
               className="bg-red-600 text-white py-2 px-4 rounded mt-4"
               onClick={addToWatchList}
             >
-              {user?.myList.includes(content)
+              {user?.myList.map((item) => item.id).includes(content.id)
                 ? "Remove from My List"
                 : "Add to My List"}
             </button>
@@ -312,24 +336,26 @@ const WatchPage = () => {
 
           {Object.keys(content).includes("number_of_episodes") ? (
             <div>
-              {seasonDetails?.episodes.map((episode) => (
+              {seasonDetails?.episodes.map((episode) => {
+              const image = episode.still_path ? episode.still_path : (content as TvShow).poster_path
+                return (
                 <div
                   key={episode.id}
                   className="mt-4 text-lg border-gray-500/70 hover:bg-gray-500 p-2"
                 >
-
-                  <div className="flex items-center"> {/* align items at the start to reduce vertical space */}
-
-                    <div className="flex-shrink-0 text-3xl mr-4 ml-24"> {/* Adjust margin-right */}
+                  <div className="flex items-center">
+                    {" "}
+                    {/* align items at the start to reduce vertical space */}
+                    <div className="flex-shrink-0 text-3xl mr-4 ml-24">
+                      {" "}
+                      {/* Adjust margin-right */}
                       {episode.episode_number}
                     </div>
-
-
                     <div className="relative">
                       <img
-                        src={`https://image.tmdb.org/t/p/w500/${episode.still_path}`}
-                        alt="episode img"
-                        className="w-96 h-64"
+                        src={`https://image.tmdb.org/t/p/w500/${image}`}
+                        alt='episode image'
+                        className="w-96 h-64 object-contain"
                         onMouseEnter={handleMouseEnter}
                         onMouseLeave={handleMouseLeave}
                       />
@@ -348,25 +374,29 @@ const WatchPage = () => {
                         </div>
                       )}
                     </div>
-
-
-
                     <div className="ml-4 flex-1">
                       <p className="font-bold">
                         {episode.episode_number}. {episode.name}
                       </p>
-                      <p className="mt-1">{episode.overview}</p> {/* Adjust margin-top */}
-                      <p className="mt-1">Air Date: {episode.air_date}</p> {/* Adjust margin-top */}
-                      <p className="mt-1">Crew: {episode?.crew?.map((c) => c.name).join(", ")}</p> {/* Adjust margin-top */}
+                      <p className="mt-1">{episode.overview}</p>{" "}
+                      {/* Adjust margin-top */}
+                      <p className="mt-1">Air Date: {episode.air_date}</p>{" "}
+                      {/* Adjust margin-top */}
                       <p className="mt-1">
-                        Guest Stars: {episode?.guest_stars?.map((c) => c.name).join(", ")}
-                      </p> {/* Adjust margin-top */}
+                        Crew: {episode?.crew?.map((c) => c.name).join(", ")}
+                      </p>{" "}
+                      {/* Adjust margin-top */}
+                      <p className="mt-1">
+                        Guest Stars:{" "}
+                        {episode?.guest_stars?.map((c) => c.name).join(", ")}
+                      </p>{" "}
+                      {/* Adjust margin-top */}
                     </div>
                   </div>
                   <hr className="mt-2" /> {/* Adjust margin-top */}
                 </div>
-
-              ))}
+                );
+              })}
             </div>
           ) : null}
         </div>

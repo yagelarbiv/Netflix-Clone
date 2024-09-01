@@ -13,8 +13,9 @@ const UserList = () => {
 
 	const handleDelete = (content: Movie | TvShow) => {
 		if(myList.includes(content)) {
-			setMyList([...myList.filter((item) => item.id !== content.id)]);
+			myList.splice(myList.indexOf(content), 1);
 			update({ ...user, myList: myList });
+			setMyList(myList);
 		}
 	};
 

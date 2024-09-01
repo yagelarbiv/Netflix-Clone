@@ -5,7 +5,6 @@ import {
   validateSignInRequest,
   validateSignUpRequest,
 } from "../vallidations/Auth.js";
-import crypto from 'crypto'
 
 const signin = async (req, res) => {
   const { email, password } = req.body;
@@ -32,6 +31,7 @@ const signup = async (req, res) => {
     password,
   });
   if (Object.keys(errors).length > 0) {
+    console.log(errors);
     res.status(400).send(errors);
   } else {
     const newUser = new User({

@@ -1,9 +1,11 @@
+import { ENV_VARS } from "../config/envVars.js";
 import { fetchFromTMDB } from "../services/tmdb.js";
 
+const APIKey = ENV_VARS.TMDB_API_KEY;
 export const getTrendingContent = async (req, res) => {
   const { type } = req.params;
   try {
-    const { data } = await fetchFromTMDB(`https://api.themoviedb.org/3/trending/${type}/day?language=en-US`);
+    const { data } = await fetchFromTMDB(`https://api.themoviedb.org/3/trending/${type}/day?api_key=${APIKey}&language=en-US`);
     const randomContent = data.results[Math.floor(Math.random() * data.results?.length)];
     res.status(200).send({content: randomContent});
   } catch (error) {
@@ -15,7 +17,7 @@ export const getTrendingContent = async (req, res) => {
 export const getContentTrailers = async (req, res) => {
   const { type, id } = req.params;
   try {
-    const { data } = await fetchFromTMDB(`https://api.themoviedb.org/3/${type}/${id}/videos?language=en-US`);
+    const { data } = await fetchFromTMDB(`https://api.themoviedb.org/3/${type}/${id}/videos?api_key=${APIKey}&language=en-US`);
     res.status(200).send({ content: data.results });
   } catch (error) {
     console.log(error);
@@ -26,7 +28,7 @@ export const getContentTrailers = async (req, res) => {
 export const getContentDetails = async (req, res) => {
   const { id, type } = req.params;
   try {
-    const { data } = await fetchFromTMDB(`https://api.themoviedb.org/3/${type}/${id}?language=en-US`);
+    const { data } = await fetchFromTMDB(`https://api.themoviedb.org/3/${type}/${id}?api_key=${APIKey}&language=en-US`);
     res.status(200).send({ content: data });
   } catch (error) {
     console.log(error);
@@ -37,7 +39,7 @@ export const getContentDetails = async (req, res) => {
 export const getSimilarContent = async (req, res) => {
   const { type, id } = req.params;
   try {
-    const { data } = await fetchFromTMDB(`https://api.themoviedb.org/3/${type}/${id}/similar?language=en-US&page=1`);
+    const { data } = await fetchFromTMDB(`https://api.themoviedb.org/3/${type}/${id}/similar?api_key=${APIKey}&language=en-US&page=1`);
     res.status(200).send({ content: data.results });
   } catch (error) {
     console.log('error', error);
@@ -48,7 +50,7 @@ export const getSimilarContent = async (req, res) => {
 export const getContentByCategory = async (req, res) => {
   const { type, category } = req.params;
   try {
-    const { data } = await fetchFromTMDB(`https://api.themoviedb.org/3/${type}/${category}?language=en-US&page=1`);
+    const { data } = await fetchFromTMDB(`https://api.themoviedb.org/3/${type}/${category}?api_key=${APIKey}&language=en-US&page=1`);
     res.status(200).send({ content: data.results });
   } catch (error) {
     console.log(error);
@@ -58,7 +60,7 @@ export const getContentByCategory = async (req, res) => {
 
 export const getAllContentByCategory = async (req, res) => {
   try {
-    const { data } = await fetchFromTMDB(`https://api.themoviedb.org/3/trending/all/day?language=en-US`);
+    const { data } = await fetchFromTMDB(`https://api.themoviedb.org/3/trending/all/day?api_key=${APIKey}&language=en-US`);
 
     res.status(200).send({ content: data.results });
   } catch (error) {
@@ -68,9 +70,9 @@ export const getAllContentByCategory = async (req, res) => {
 };
 
 export const getSeasonDetails = async (req, res) => {
-  const { id, seasonNumber } = req.params;
+  const { type, id, seasonNumber } = req.params;
   try {
-    const { data } = await fetchFromTMDB(`https://api.themoviedb.org/3/tv/${id}/season/${seasonNumber}?language=en-US`);
+    const { data } = await fetchFromTMDB(`https://api.themoviedb.org/3/tv/${id}/season/${seasonNumber}?api_key=${APIKey}&language=en-US`);
     res.status(200).send({ content: data });
   } catch (error) {
     console.log(error);
