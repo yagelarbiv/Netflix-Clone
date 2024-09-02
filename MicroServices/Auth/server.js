@@ -13,6 +13,7 @@ app.use(cors({
     origin: [
         'http://localhost:5173',
         'http://localhost:8080',
+        'https://netflix-clone-backend-alpha.vercel.app',
     ],
     credentials: true
 }));

@@ -9,7 +9,10 @@ const PORT = ENV_VARS.PORT;
 const app = express();
 
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: [
+        'http://localhost:5173',
+        'https://netflix-clone-front-amber.vercel.app'
+    ],
     credentials: true,
     optionsSuccessStatus: 200,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
