@@ -6,6 +6,10 @@ export const AxiosUsersInstance = axios.create({
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
+    'netflix-clone-two-eosin.vercel.app': [
+      'https://netflix-clone-two-eosin.vercel.app',
+      'https://netflix-clone-backend-alpha.vercel.app',
+    ]
   }
 });
 
@@ -15,6 +19,10 @@ export const AxiosContentInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'authorization': `Bearer ${Cookie.get('Jwt')}`,
+    'netflix-clone-two-eosin.vercel.app': [
+      'https://netflix-clone-content.vercel.app',
+      'https://netflix-clone-backend-alpha.vercel.app',
+    ]
   }
 });
 
@@ -24,5 +32,9 @@ export const AxiosSearchInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${Cookie.get('Jwt')}`,
+    'netflix-clone-two-eosin.vercel.app': [
+      'https://netflix-clone-content.vercel.app',
+      'https://netflix-clone-backend-alpha.vercel.app',
+    ]
   }
 })
