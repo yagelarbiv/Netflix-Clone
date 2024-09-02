@@ -4,6 +4,10 @@ import Cookie from 'js-cookie';
 export const AxiosUsersInstance = axios.create({
   baseURL: 'https://netflix-clone-backend-alpha.vercel.app/api/v2/auth/users',
   withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': 'https://netflix-clone-backend-alpha.vercel.app',
+  }
 });
 
 export const AxiosContentInstance = axios.create({
@@ -11,7 +15,8 @@ export const AxiosContentInstance = axios.create({
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
-    'authorization': `Bearer ${Cookie.get('Jwt')}`
+    'authorization': `Bearer ${Cookie.get('Jwt')}`,
+    'Access-Control-Allow-Origin': 'https://netflix-clone-backend-alpha.vercel.app',
   }
 });
 
@@ -20,6 +25,7 @@ export const AxiosSearchInstance = axios.create({
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${Cookie.get('Jwt')}`
+    'Authorization': `Bearer ${Cookie.get('Jwt')}`,
+    'Access-Control-Allow-Origin': 'https://netflix-clone-backend-alpha.vercel.app',
   }
 })
