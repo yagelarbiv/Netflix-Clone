@@ -11,6 +11,7 @@ const app = express();
 
 app.use(cors({ 
     origin: '*', 
+    credentials: true, // This is important for cookies/auth headers
     methods: ['GET', 'POST', 'PUT', 'DELETE'], 
 }));
 app.use(express.json());
