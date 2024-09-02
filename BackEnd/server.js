@@ -38,7 +38,7 @@ const auth = proxy("https://netflix-clone-two-eosin.vercel.app", {
         return headers;
     }
 })
-const content = proxy("https://netflix-clone-content.vercel.app" {
+const content = proxy("https://netflix-clone-content.vercel.app", {
     proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
         proxyReqOpts.headers['Origin'] = 'https://netflix-clone-front-amber.vercel.app';
         return proxyReqOpts;
