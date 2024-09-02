@@ -9,15 +9,15 @@ import connectDB from "./config/db.js";
 
 const PORT = ENV_VARS.PORT;
 const app = express();
-
-app.use(cors({
+const corsOptions = {
     origin: [
         'http://localhost:5173',
         'http://localhost:8080',
         'https://netflix-clone-backend-alpha.vercel.app',
     ],
     credentials: true
-}));
+}
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
