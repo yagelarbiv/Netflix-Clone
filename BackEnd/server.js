@@ -8,18 +8,11 @@ import proxy from "express-http-proxy";
 const PORT = ENV_VARS.PORT;
 const app = express();
 
-const corsOptions = {
-    origin: [
-        'http://localhost:5173',
-        'https://netflix-clone-front-amber.vercel.app'
-    ],
-    credentials: true,
-    optionsSuccessStatus: 200,
-    allowedHeaders: ['Content-Type', 'Authorization', 'access-control-allow-origin'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-}
 
-app.use(cors());
+app.use(cors({ 
+    origin: '*', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+}));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
