@@ -6,10 +6,7 @@ export const AxiosUsersInstance = axios.create({
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': [
-      'https://netflix-clone-two-eosin.vercel.app',
-      'https://netflix-clone-backend-alpha.vercel.app',
-    ]
+    'Access-Control-Allow-Origin': '*'
   }
 });
 
@@ -19,10 +16,7 @@ export const AxiosContentInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'authorization': `Bearer ${Cookie.get('Jwt')}`,
-    'Access-Control-Allow-Origin': [
-      'https://netflix-clone-content.vercel.app',
-      'https://netflix-clone-backend-alpha.vercel.app',
-    ]
+    'Access-Control-Allow-Origin': '*'
   }
 });
 
@@ -32,9 +26,6 @@ export const AxiosSearchInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${Cookie.get('Jwt')}`,
-    'Access-Control-Allow-Origin': [
-      'https://netflix-clone-content.vercel.app',
-      'https://netflix-clone-backend-alpha.vercel.app',
-    ]
+    'Access-Control-Allow-Origin': '*'
   }
 })
