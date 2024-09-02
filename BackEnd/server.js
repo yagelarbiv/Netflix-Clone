@@ -28,7 +28,7 @@ app.use(cookieParser());
 // app.use("/api/v1/search", protectRoute, searchRoutes);
 
 //Microservices
-const auth = proxy("https://netflix-clone-f2wm9gqmw-yagelarbivs-projects.vercel.app", {
+const auth = proxy("https://netflix-clone-two-eosin.vercel.app", {
     proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
         proxyReqOpts.headers['Origin'] = 'https://netflix-clone-front-amber.vercel.app';
         return proxyReqOpts;
@@ -38,7 +38,7 @@ const auth = proxy("https://netflix-clone-f2wm9gqmw-yagelarbivs-projects.vercel.
         return headers;
     }
 })
-const content = proxy("https://netflix-clone-content-56pronsxj-yagelarbivs-projects.vercel.app", {
+const content = proxy("https://netflix-clone-content.vercel.app", {
     proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
         proxyReqOpts.headers['Origin'] = 'https://netflix-clone-front-amber.vercel.app';
         return proxyReqOpts;
