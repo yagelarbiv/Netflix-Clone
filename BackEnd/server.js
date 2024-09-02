@@ -25,7 +25,7 @@ app.use(cookieParser());
 // app.use("/api/v1/search", protectRoute, searchRoutes);
 
 //Microservices
-const auth = proxy("http://localhost:5000")
+const auth = proxy("netflix-clone-two-eosin.vercel.app")
 const content = proxy("http://localhost:6000")
 app.use('/api/v2/auth', auth);
 app.use('/api/v2/Content', content);
