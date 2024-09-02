@@ -28,8 +28,26 @@ app.use(cookieParser());
 // app.use("/api/v1/search", protectRoute, searchRoutes);
 
 //Microservices
-const auth = proxy("https://netflix-clone-two-eosin.vercel.app")
-const content = proxy("https://netflix-clone-content.vercel.app")
+const auth = proxy("https://netflix-clone-two-eosin.vercel.app", {
+    proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
+        proxyReqOpts.headers['Origin'] = 'https://netflix-clone-front-amber.vercel.app';
+        return proxyReqOpts;
+    },
+    userResHeaderDecorator: (headers, userReq, userRes, proxyReq, proxyRes) => {
+        headers['Access-Control-Allow-Origin'] = 'https://netflix-clone-front-amber.vercel.app';
+        return headers;
+    }
+})
+const content = proxy("https://netflix-clone-content.vercel.app" {
+    proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
+        proxyReqOpts.headers['Origin'] = 'https://netflix-clone-front-amber.vercel.app';
+        return proxyReqOpts;
+    },
+    userResHeaderDecorator: (headers, userReq, userRes, proxyReq, proxyRes) => {
+        headers['Access-Control-Allow-Origin'] = 'https://netflix-clone-front-amber.vercel.app';
+        return headers;
+    }
+})
 app.use('/api/v2/auth', auth);
 app.use('/api/v2/Content', content);
 
