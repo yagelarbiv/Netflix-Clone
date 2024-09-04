@@ -1,4 +1,13 @@
 services:
+  frontend:
+    image: node:18
+    working_dir: /src
+    volumes:
+      - ./FrontEnd:/src
+    command: sh -c "npm install && npm run dev"
+    ports:
+      - "5173:5173"
+
   backend:
     image: node:18
     working_dir: /server
@@ -6,13 +15,13 @@ services:
       - ./BackEnd:/server
     command: sh -c "npm install && npm run start"
     ports:
-      - "8080:8080"
+      - "8081:8081"
     environment:
       - MONGO_CONNECTION_STRING=mongodb+srv://yagelarbiv2:Ya123456@cluster0.vlxquk7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
       - JWT_PW=836faf02b09f121f2a4f2a469be32cd19b9b117ae035c40662c3ef6337c268c7
-      - PORT=8080
+      - PORT=8081
       - NODE_ENV=development
-      - TMDB_API_KEY=eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5OWVhYzU3ODY3NzViMzVkNWUwODRlMjk4NWNjNmIxZCIsIm5iZiI6MTcyNDIyMTY3OS44ODIwMTksInN1YiI6IjY2YjRiMGM0M2NmMDkzNzNiY2U1YjNhNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.c4qw6tymouFzwMLO6OxgA8Nh2bsgS0oytN_maZQdOOs
+      - TMDB_API_KEY=fc7f6503ba9049e513747fb6c5425a64
     depends_on:
       - mongo
 
@@ -35,7 +44,7 @@ services:
       - JWT_PW=836faf02b09f121f2a4f2a469be32cd19b9b117ae035c40662c3ef6337c268c7
       - PORT=5000
       - NODE_ENV=development
-      - TMDB_API_KEY=eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5OWVhYzU3ODY3NzViMzVkNWUwODRlMjk4NWNjNmIxZCIsIm5iZiI6MTcyNDIyMTY3OS44ODIwMTksInN1YiI6IjY2YjRiMGM0M2NmMDkzNzNiY2U1YjNhNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.c4qw6tymouFzwMLO6OxgA8Nh2bsgS0oytN_maZQdOOs
+      - TMDB_API_KEY=fc7f6503ba9049e513747fb6c5425a64
       - EMAIL_USER_NAME=yagelarbiv3@gmail.com
       - EMAIL_PASSWORD=iimg ylzw gulx brqz
     depends_on:
@@ -54,6 +63,6 @@ services:
       - JWT_PW=836faf02b09f121f2a4f2a469be32cd19b9b117ae035c40662c3ef6337c268c7
       - PORT=6000
       - NODE_ENV=development
-      - TMDB_API_KEY=eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5OWVhYzU3ODY3NzViMzVkNWUwODRlMjk4NWNjNmIxZCIsIm5iZiI6MTcyNDIyMTY3OS44ODIwMTksInN1YiI6IjY2YjRiMGM0M2NmMDkzNzNiY2U1YjNhNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.c4qw6tymouFzwMLO6OxgA8Nh2bsgS0oytN_maZQdOOs
+      - TMDB_API_KEY=fc7f6503ba9049e513747fb6c5425a64
     depends_on:
       - mongo

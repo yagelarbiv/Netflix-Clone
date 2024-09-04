@@ -9,10 +9,15 @@ const PORT = ENV_VARS.PORT;
 const app = express();
 
 
-app.use(cors({ 
-    origin: '*', 
-    credentials: true, // This is important for cookies/auth headers
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+app.use(cors({
+    origin: [
+        'http://frontend:5173',
+        'http://localhost:5173',
+        // 'https://netflix-clone-front-amber.vercel.app',
+    ],
+    credentials: true,
+    optionsSuccessStatus: 200,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 }));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -25,32 +30,21 @@ app.use(cookieParser());
 // app.use("/api/v1/search", protectRoute, searchRoutes);
 
 //Microservices
-const auth = proxy("https://netflix-clone-two-eosin.vercel.app", {
-    proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
-        proxyReqOpts.headers['Origin'] = 'https://netflix-clone-front-amber.vercel.app';
-        return proxyReqOpts;
-    },
-    userResHeaderDecorator: (headers, userReq, userRes, proxyReq, proxyRes) => {
-        headers['Access-Control-Allow-Origin'] = 'https://netflix-clone-front-amber.vercel.app';
-        return headers;
-    }
-})
-const content = proxy("https://netflix-clone-content.vercel.app", {
-    proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
-        proxyReqOpts.headers['Origin'] = 'https://netflix-clone-front-amber.vercel.app';
-        return proxyReqOpts;
-    },
-    userResHeaderDecorator: (headers, userReq, userRes, proxyReq, proxyRes) => {
-        headers['Access-Control-Allow-Origin'] = 'https://netflix-clone-front-amber.vercel.app';
-        return headers;
-    }
-})
+const auth = proxy("http://auth-service:5000")
+// const auth = proxy("https://netflix-clone-two-eosin.vercel.app", {
+//     userResHeaderDecorator: (headers, userReq, userRes, proxyReq, proxyRes) => {
+//         headers['Access-Control-Allow-Origin'] = 'https://netflix-clone-front-amber.vercel.app'; // Ensure this matches your frontend
+//         return headers;
+//     }
+// });
+const content = proxy("http://content-service:6000")
 app.use('/api/v2/auth', auth);
 app.use('/api/v2/Content', content);
 
 
 //not found handler
 app.use((err,req,res,next)=> {
+    console.log("backend", err);
     res.status(500).send({message: err.message});
 });
 
