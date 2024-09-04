@@ -13,7 +13,7 @@ app.use(cors({
     origin: [
         'http://frontend:5173',
         'http://localhost:5173',
-        'https://netflix-clone-front-amber.vercel.app:5173',    
+        'https://netflix-clone-front-amber.vercel.app',    
     ],
     credentials: true,
     optionsSuccessStatus: 200,
@@ -30,8 +30,8 @@ app.use(cookieParser());
 // app.use("/api/v1/search", protectRoute, searchRoutes);
 
 //Microservices
-const auth = proxy("https://https://netflix-clone-two-eosin.vercel.app:5000")
-const content = proxy("https://https://netflix-clone-content.vercel.app:6000")
+const auth = proxy("https://https://netflix-clone-two-eosin.vercel.app")
+const content = proxy("https://https://netflix-clone-content.vercel.app")
 app.use('/api/v2/auth', auth);
 app.use('/api/v2/Content', content);
 
