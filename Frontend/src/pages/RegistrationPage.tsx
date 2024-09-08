@@ -11,7 +11,7 @@ const RegistrationPage = () => {
                 <div className="text-center">
 
                     <div className="max-w-md mx-auto bg-white p-6 rounded-lg mt-24">
-                        <img src="/SetupLogo.png" alt="Setuplogo" className="w-72 ml-14 mb-6" />
+                        <img src="../public//SetupLogo.png" alt="Setuplogo" className="w-72 ml-14 mb-6" />
 
                         <h2 className="text-gray-500 text-sm font-semibold">STEP 1 OF 3</h2>
                         <h1 className="mt-2 text-3xl font-semibold">Finish setting up your account</h1>
