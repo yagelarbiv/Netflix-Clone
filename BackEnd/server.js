@@ -13,7 +13,7 @@ app.use(cors({
     origin: [
         'http://frontend:5173',
         'http://localhost:5173',
-        'https://netflix-clone-front-amber.vercel.app',    
+        // 'https://netflix-clone-front-amber.vercel.app',    
     ],
     credentials: true,
     optionsSuccessStatus: 200,

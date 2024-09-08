@@ -143,7 +143,7 @@ const MovieSlider = ({
                   (item as TvShow).poster_path
                 }`}
                 alt="card"
-                className="rounded-[0.2rem] w-100 h-100 z-10 transition-transform duration-300 ease-in-out group-hover:scale-110" //img size
+                className="rounded-[0.2rem] w-[250px] h-[140px] z-10 transition-transform duration-300 ease-in-out group-hover:scale-110" //img size
                 
               />
               <p className="mt-2 text-center">
