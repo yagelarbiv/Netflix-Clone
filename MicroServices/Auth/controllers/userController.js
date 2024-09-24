@@ -19,7 +19,9 @@ const signin = async (req, res) => {
         res.send({ ...user._doc, password: "",token: token });
       }
     }
-    res.status(401).send({ message: "Invalid credentials" });
+    else{
+      res.status(401).send({ message: "Invalid credentials" });
+    }
   }
 };
 
@@ -37,7 +39,7 @@ const signup = async (req, res) => {
     const newUser = new User({
       username,
       email,
-      password: bcrypt.hashSync(password),
+      password: encryptString(password),
     });
     const user = await newUser.save();
     const token = generateToken(user._id, res);
@@ -60,7 +62,7 @@ const refreshToken = async (req, res) => {
   const user = await User.findById(id);
   if (user) {
     const token = generateToken(user._id, res);
-    res.send({ ...user._doc, password: "", token: token });
+    res.send({ ...user._doc, password: "",token: token });
     return;
   }
   res.status(401).send({ message: "Invalid credentials" });

@@ -8,5 +8,6 @@ export const ENV_VARS = {
   NODE_ENV: process.env.NODE_ENV,
   TMDB_API_KEY: process.env.TMDB_API_KEY,
   EmailUserName: process.env.EMAIL_USER_NAME,
-  EmailPassword: process.env.EMAIL_PASSWORD
+  EmailPassword: process.env.EMAIL_PASSWORD,
+  secretKey: process.env.SECRET_KEY || "secretKey",
 };

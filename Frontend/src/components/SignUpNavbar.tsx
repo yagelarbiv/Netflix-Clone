@@ -5,7 +5,7 @@ const SignUpNavbar = () => {
         <>
             <header className="w-full flex justify-between items-center p-4">
                 <Link to={"/"}>
-                    <img src="/netflix-logo.png" alt="logo" className="w-44 ml-8 mt-1" />
+                    <img src="../public/netflix-logo.png" alt="logo" className="w-44 ml-8 mt-1" />
                 </Link>
                 <Link to={"/login"} className="text-xl font-semibold mr-10">
                     Sign In

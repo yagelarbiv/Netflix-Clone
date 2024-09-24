@@ -11,16 +11,16 @@ const ChoosePlanPage = () => {
                 <div className="text-center">
                     <div className="max-w-md mx-auto bg-white p-6 rounded-lg mt-12">
 
-                        <img src="/CheckMarkLogo.png" alt="Check mark logo" className="w-20 ml-24 mb-5" />
+                        <img src="../public/CheckMarkLogo.png" alt="Check mark logo" className="w-20 ml-24 mb-5" />
 
                         <h2 className="text-gray-500 text-sm font-semibold">STEP 2 OF 3</h2>
                         <h1 className="mt-2 text-3xl font-semibold">Choose your plan.</h1>
 
                         <div className="flex items-center">
                             <div className="mr-3 mt-4">
-                                <img src="/CheckMark.png" alt="Check mark" className="w-10" />
-                                <img src="/CheckMark.png" alt="Check mark" className="w-10 py-7" />
-                                <img src="/CheckMark.png" alt="Check mark" className="w-10" />
+                                <img src="../public/CheckMark.png" alt="Check mark" className="w-10" />
+                                <img src="../public/CheckMark.png" alt="Check mark" className="w-10 py-7" />
+                                <img src="../public/CheckMark.png" alt="Check mark" className="w-10" />
                             </div>
 
                             <div className="flex-1 text-left mt-5">

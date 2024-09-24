@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useContentStore } from "../store/content";
 import Navbar from "../components/Navbar";
 import { Loader, Search } from "lucide-react";
@@ -58,6 +58,33 @@ const SearchPage = () => {
       }
 		}
 	};
+
+	useEffect(() => {
+		const handleEnter = async () => {
+			try {
+				const res = await AxiosSearchInstance.get(`/content/${contentType}/${searchTerm}`,{
+					withCredentials: true,
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': `Bearer ${token}`
+					}
+				});
+				setResults(res.data.content);
+			} catch (error: unknown) {
+				if (error instanceof AxiosError) {
+					if (error.response?.status === 404) {
+						toast.error("Nothing found, make sure you are searching under the right category");
+					} else {
+						toast.error("An error occurred, please try again later");
+					}
+				} else {
+					console.error(error);
+				}
+			}
+		}
+
+		handleEnter
+	}, [searchTerm]);
 
   if(!token){
     return(

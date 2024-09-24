@@ -13,7 +13,7 @@ const PaymentPickerPage = () => {
                     <div className="max-w-md mx-auto bg-white p-6 rounded-lg">
 
                         <div className="flex items-center justify-center h-full">
-                            <img src="/LockLogo.png" alt="Check mark logo" className="w-16 mb-5" />
+                            <img src="../public//LockLogo.png" alt="Check mark logo" className="w-16 mb-5" />
                         </div>
 
                         <h2 className="text-gray-500 text-sm font-semibold">STEP 2 OF 3</h2>
