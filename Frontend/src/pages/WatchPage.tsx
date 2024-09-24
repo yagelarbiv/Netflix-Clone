@@ -124,6 +124,8 @@ const WatchPage = () => {
   }, [contentType, id, token]);
 
   useEffect(() => {
+    window.scrollTo(0, 0); //start from top screen
+
     const getSeasonDetails = async () => {
       if (
         content &&
@@ -222,9 +224,8 @@ const WatchPage = () => {
               title="Previous trailer"
               type="button"
               className={`
-							bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded ${
-                currentTrailerIdx === 0 ? "opacity-50 cursor-not-allowed " : ""
-              }}
+							bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded ${currentTrailerIdx === 0 ? "opacity-50 cursor-not-allowed " : ""
+                }}
 							`}
               disabled={currentTrailerIdx === 0}
               onClick={handlePrev}
@@ -236,11 +237,10 @@ const WatchPage = () => {
               title="Next trailer"
               type="button"
               className={`
-							bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded ${
-                currentTrailerIdx === trailers.length - 1
+							bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded ${currentTrailerIdx === trailers.length - 1
                   ? "opacity-50 cursor-not-allowed "
                   : ""
-              }}
+                }}
 							`}
               disabled={currentTrailerIdx === trailers.length - 1}
               onClick={handleNext}
@@ -250,12 +250,12 @@ const WatchPage = () => {
           </div>
         )}
 
-        <div
-          className="aspect-video mb-8 p-2 sm:px-10 md:px-32"
-          onMouseEnter={() => setHover(true)}
-          onMouseLeave={() => setHover(false)}
-        >
-          {trailers?.length > 0 && (
+        {trailers && trailers.length > 0 ? (
+          <div
+            className="aspect-video mb-8 p-2 sm:px-10 md:px-32"
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+          >
             <ReactPlayer
               controls={true}
               playing={hover}
@@ -264,18 +264,16 @@ const WatchPage = () => {
               className="mx-auto overflow-hidden rounded-lg"
               url={`https://www.youtube.com/watch?v=${trailers[currentTrailerIdx].key}`}
             />
-          )}
-
-          {trailers?.length === 0 && (
-            <h2 className="text-xl text-center mt-5">
-              No trailers available for{" "}
-              <span className="font-bold text-red-600">
-                {(content as Movie)?.title || (content as TvShow)?.name}
-              </span>{" "}
-              😥
-            </h2>
-          )}
-        </div>
+          </div>
+        ) : (
+          <h2 className="text-xl text-center mt-40 mb-60">
+            No trailers available for{" "}
+            <span className="font-bold text-red-600">
+              {(content as Movie)?.title || (content as TvShow)?.name}
+            </span>{" "}
+            😥
+          </h2>
+        )}
 
         {/* movie details */}
         <div
@@ -290,7 +288,7 @@ const WatchPage = () => {
             <p className="mt-2 text-lg">
               {formatReleaseDate(
                 (content as Movie)?.release_date ||
-                  (content as TvShow)?.first_air_date
+                (content as TvShow)?.first_air_date
               )}{" "}
               |{" "}
               {(content as Movie)?.adult ? (
@@ -337,64 +335,64 @@ const WatchPage = () => {
           {Object.keys(content).includes("number_of_episodes") ? (
             <div>
               {seasonDetails?.episodes.map((episode) => {
-              const image = episode.still_path ? episode.still_path : (content as TvShow).poster_path
+                const image = episode.still_path ? episode.still_path : (content as TvShow).poster_path
                 return (
-                <div
-                  key={episode.id}
-                  className="mt-4 text-lg border-gray-500/70 hover:bg-gray-500 p-2"
-                >
-                  <div className="flex items-center">
-                    {" "}
-                    {/* align items at the start to reduce vertical space */}
-                    <div className="flex-shrink-0 text-3xl mr-4 ml-24">
+                  <div
+                    key={episode.id}
+                    className="mt-4 text-lg border-gray-500/70 hover:bg-gray-500 p-2"
+                  >
+                    <div className="flex items-center">
                       {" "}
-                      {/* Adjust margin-right */}
-                      {episode.episode_number}
-                    </div>
-                    <div className="relative">
-                      <img
-                        src={`https://image.tmdb.org/t/p/w500/${image}`}
-                        alt='episode image'
-                        className="w-96 h-64 object-contain"
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
-                      />
+                      {/* align items at the start to reduce vertical space */}
+                      <div className="flex-shrink-0 text-3xl mr-4 ml-24">
+                        {" "}
+                        {/* Adjust margin-right */}
+                        {episode.episode_number}
+                      </div>
+                      <div className="relative">
+                        <img
+                          src={`https://image.tmdb.org/t/p/w500/${image}`}
+                          alt='episode image'
+                          className="w-96 h-64 object-contain"
+                          onMouseEnter={handleMouseEnter}
+                          onMouseLeave={handleMouseLeave}
+                        />
 
-                      {isHovered && trailers.length > 0 && (
-                        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
-                          <div className="px-4">
-                            <ReactPlayer
-                              controls={true}
-                              width="90%"
-                              height="20vh"
-                              className="mx-auto overflow-hidden rounded-lg"
-                              url={`https://www.youtube.com/watch?v=${trailers[currentTrailerIdx].key}`}
-                            />
+                        {isHovered && trailers.length > 0 && (
+                          <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
+                            <div className="px-4">
+                              <ReactPlayer
+                                controls={true}
+                                width="90%"
+                                height="20vh"
+                                className="mx-auto overflow-hidden rounded-lg"
+                                url={`https://www.youtube.com/watch?v=${trailers[currentTrailerIdx].key}`}
+                              />
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
+                      </div>
+                      <div className="ml-4 flex-1">
+                        <p className="font-bold">
+                          {episode.episode_number}. {episode.name}
+                        </p>
+                        <p className="mt-1">{episode.overview}</p>{" "}
+                        {/* Adjust margin-top */}
+                        <p className="mt-1">Air Date: {episode.air_date}</p>{" "}
+                        {/* Adjust margin-top */}
+                        <p className="mt-1">
+                          Crew: {episode?.crew?.map((c) => c.name).join(", ")}
+                        </p>{" "}
+                        {/* Adjust margin-top */}
+                        <p className="mt-1">
+                          Guest Stars:{" "}
+                          {episode?.guest_stars?.map((c) => c.name).join(", ")}
+                        </p>{" "}
+                        {/* Adjust margin-top */}
+                      </div>
                     </div>
-                    <div className="ml-4 flex-1">
-                      <p className="font-bold">
-                        {episode.episode_number}. {episode.name}
-                      </p>
-                      <p className="mt-1">{episode.overview}</p>{" "}
-                      {/* Adjust margin-top */}
-                      <p className="mt-1">Air Date: {episode.air_date}</p>{" "}
-                      {/* Adjust margin-top */}
-                      <p className="mt-1">
-                        Crew: {episode?.crew?.map((c) => c.name).join(", ")}
-                      </p>{" "}
-                      {/* Adjust margin-top */}
-                      <p className="mt-1">
-                        Guest Stars:{" "}
-                        {episode?.guest_stars?.map((c) => c.name).join(", ")}
-                      </p>{" "}
-                      {/* Adjust margin-top */}
-                    </div>
+                    <hr className="mt-2" /> {/* Adjust margin-top */}
                   </div>
-                  <hr className="mt-2" /> {/* Adjust margin-top */}
-                </div>
                 );
               })}
             </div>
