@@ -41,7 +41,7 @@ const Navbar = () => {
 				<Link to={"/search"}>
 					<Search className='size-6 cursor-pointer' />
 				</Link>
-				<img src={user?.profilePicture.toString()} alt='Avatar' className='h-8 rounded cursor-pointer' />
+				<img src={user?.profilePicture?.toString()} alt='Avatar' className='h-8 rounded cursor-pointer' />
 				<LogOut className='size-6 cursor-pointer' onClick={logout} />
 				<div className='sm:hidden'>
 					<Menu className='size-6 cursor-pointer' onClick={toggleMobileMenu} />

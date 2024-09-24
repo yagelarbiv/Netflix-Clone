@@ -4,6 +4,7 @@ import { create } from "zustand";
 import Cookie from 'js-cookie';
 import { Movie, TvShow } from "../pages/home/HomeScreen";
 import { AxiosUsersInstance } from "../axios";
+import { decryptObject, encodigResult, encryptObject, encryptString } from "../utils/encryption";
 
 export interface User {
 	_id: string,
@@ -13,6 +14,7 @@ export interface User {
 	profilePicture: string,
   isAdmin: false,
 	myList: (Movie | TvShow)[],
+  token: string,
 }
 
 interface AuthStore {
@@ -41,19 +43,8 @@ const useAuthStore = create<AuthStore>((set) => ({
     set({ isSigningUp: true });
     try {
       const response = await AxiosUsersInstance.post("/signup", credentials);
-      Cookie.set("Jwt", JSON.stringify(response.data.token));
-      console.log(Cookie.get("Jwt"));
-      const user: User = {
-        _id: response.data._id,
-        email: response.data.email,
-        username: response.data.username,
-        password: response.data.password,
-        profilePicture: response.data.profilePicture,
-        isAdmin: response.data.isAdmin,
-        myList: response.data.myList,
-      };
-      Cookie.set("user", JSON.stringify(user));
-      set({ user: response.data, isSigningUp: false, token: response.data.token });
+      const res = await encodigResult(response);
+      set({ user: res, isSigningUp: false, token: res.token });
       toast.success("Account created successfully");
     } catch (error: unknown) {
 			const axiosError = error as AxiosError;
@@ -65,22 +56,11 @@ const useAuthStore = create<AuthStore>((set) => ({
     set({ isLoggingIn: true });
     try {
       const response = await AxiosUsersInstance.post("/login", credentials);
-      Cookie.set("Jwt", response.data.token);
-      const user = {
-        _id: response.data._id,
-        email: response.data.email,
-        password: response.data.password,
-        username: response.data.username,
-        profilePicture: response.data.profilePicture,
-        isAdmin: response.data.isAdmin,
-        myList: response.data.myList,
-      };
-      Cookie.set("user", JSON.stringify(user));
-      localStorage.setItem("user", JSON.stringify(response.data));
-      set({ user: response.data, isLoggingIn: false, token: response.data.token });
+      const res = await encodigResult(response);
+      set({ user: res, isLoggingIn: false, token: res.token });
     } catch (error: unknown) {
 			const axiosError = error as AxiosError;
-			console.log((axiosError.response as unknown as { message: string }).message || "Login failed");
+			console.log((axiosError.response as unknown as { message: string })?.message || "Login failed");
       set({ isLoggingIn: false });
     }
   },
@@ -103,21 +83,13 @@ const useAuthStore = create<AuthStore>((set) => ({
   authCheck: async () => {
     set({ isCheckingAuth: true });
     try {
-      const UserCookie = JSON.parse(Cookie.get("user")?.toString() || "{}");
+      const userCookie = Cookie.get("user") ?? "";
+      const UserCookie = JSON.parse(await decryptObject(userCookie.toString()) || "{}");
       const response = await AxiosUsersInstance.post("/refresh", {
         id: UserCookie._id,
       });
-      Cookie.set("Jwt", response.data.token);
-      const user = {
-        _id: response.data._id,
-        email: response.data.email,
-        username: response.data.username,
-        profilePicture: response.data.profilePicture,
-        isAdmin: response.data.isAdmin,
-        myList: response.data.myList,
-      };
-      Cookie.set("user", JSON.stringify(user));
-      set({ user: response.data, isCheckingAuth: false, token: response.data.token });
+      const res = await encodigResult(response);
+      set({ user: res, isCheckingAuth: false, token: res.token });
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       console.log(error);
@@ -127,11 +99,12 @@ const useAuthStore = create<AuthStore>((set) => ({
   },
   update: async (user: User) => {
     try {
-      Cookie.set("user", JSON.stringify(user));
+      const decodedUser = await decryptObject(JSON.stringify(user));
+      const userObject = JSON.parse(decodedUser) as User;
       const response = await AxiosUsersInstance.post("/update", {
-        user
+        userObject
       });
-      console.log(response.data);
+      await encodigResult(response);
       set({ user: response.data });
     } catch (error: unknown) {
       const axiosError = error as AxiosError;

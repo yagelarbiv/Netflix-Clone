@@ -44,7 +44,9 @@ const WatchPage = () => {
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
 
-  console.log(user?.myList);
+  console.log(content);
+  console.log(id);
+
   const reDoFunction = async (
     func: (url: string, token: string) => Promise<AxiosResponse | undefined>,
     url: string
@@ -109,6 +111,7 @@ const WatchPage = () => {
     const getContentDetails = async () => {
       try {
         const res = await getContent(`${id}/details/${contentType}`, token);
+        console.log(res?.data?.content);
         setContent(res?.data?.content);
       } catch (error) {
         console.error(error);
