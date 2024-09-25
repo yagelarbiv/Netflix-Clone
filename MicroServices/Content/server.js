@@ -35,6 +35,10 @@ app.use((err,req,res,next)=> {
     res.status(500).send({message: err.message});
 });
 
+app.get("/", (req, res) => {
+    res.send("Welcome to Content MicroService");
+});
+
 app.listen(PORT, () => {
     console.log(`server running on: http://localhost:${PORT}`);
     connectDB();
