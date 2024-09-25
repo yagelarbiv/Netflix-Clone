@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
 const SubscriptionType = {
-  EXPIRED: "EXPIRED",
-  BASIC: "BASIC",
-  STANDARD: "STANDARD",
-  PREMIUM: "PREMIUM",
+  EXPIRED: "Expired",
+  BASIC: "Basic",
+  STANDARD: "Standard",
+  PREMIUM: "Premium",
 };
 const SubscriberSchema = new mongoose.Schema(
   {

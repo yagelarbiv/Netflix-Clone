@@ -5,20 +5,20 @@ import { ENV_VARS } from "./configurations/envVars.js";
 export const plans = [
   {
     type: SubscriptionType.BASIC,
-    priceId: "price_1PpwwMGI8xoArhcckSGICyTL",
+    priceId: "price_1Q2qMBJvPmwbYpJjF8DmALuZ",
     price: 10,
     duration: "/month",
   },
 
   {
     type: SubscriptionType.STANDARD,
-    priceId: "price_1PpwweGI8xoArhcct9iyJoiM",
+    priceId: "price_1Q2qUDJvPmwbYpJjzsfKyIGM",
     price: 20,
     duration: "/month",
   },
   {
     type: SubscriptionType.PREMIUM,
-    priceId: "price_1PpwxAGI8xoArhccpY5Ofz0Q",
+    priceId: "price_1Q2qUjJvPmwbYpJjzaXODQxo",
     price: 30,
     duration: "/month",
   },

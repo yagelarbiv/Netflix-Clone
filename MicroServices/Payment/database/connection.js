@@ -3,6 +3,7 @@ import { ENV_VARS } from "../configurations/envVars.js";
 
 async function DBConnect() {
   const mongoUri = ENV_VARS.MONGO_CONNECTION_STRING;
+  
   if (!mongoUri)
     throw new Error("MONGO_CONNECTION_STRING environment variable is not defined");
 

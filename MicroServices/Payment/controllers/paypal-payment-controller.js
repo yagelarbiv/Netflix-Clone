@@ -3,10 +3,15 @@ import { SubscriptionService } from "../services/subscription-service.js";
 
 
 export class PayPalController {
+  paypalService;
+  subscriptionService;
   constructor(
     paypalService = new PayPalService(),
     subscriptionService = new SubscriptionService()
-  ) {}
+  ) {
+    this.paypalService = paypalService;
+    this.subscriptionService = subscriptionService;
+  }
 
   createPayPalOrder = async (req, res)=> {
     const { selectedPlan, PlanPrice, userId } = req.body;
