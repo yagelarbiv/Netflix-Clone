@@ -27,22 +27,22 @@ export const HOME_PAGE_SLIDER_CATEGORIES: categories[] = [
     content: "movie"
   },
   {
-    title: "on the air",
+    title: "On The Air",
     category: "on_the_air",
     content: "tv"
   },
   {
-    title: "popular",
+    title: "Popular",
     category: "popular",
     content: "movie"
   },
   {
-    title: "popular",
+    title: "Popular",
     category: "popular",
     content: "tv"
   },
   {
-    title: "upcoming",
+    title: "Upcoming",
     category: "upcoming",
     content: "movie"
   },
@@ -55,27 +55,27 @@ export const HOME_PAGE_SLIDER_CATEGORIES: categories[] = [
 
 export const NEW_AND_POPULAR_CATEGORIES: categories[] = [
   {
-    title:"trending movies and tv shows",
+    title:"Trending Movies And Tv Shows",
     category: "trending_all",
     content: "all"
   },
   {
-    title: "tv shows on the air",
+    title: "Tv Shows On The Air",
     category: "on_the_air",
     content: "tv"
   },
   {
-    title: "Now Playing movies",
+    title: "Now Playing Movies",
     category: "now_playing",
     content: "movie"
   },
   {
-    title: "tv shows Airing Today",
+    title: "Tv Shows Airing Today",
     category: "airing_today",
     content: "tv"
   },
   {
-    title: "upcoming movies",
+    title: "Upcoming Movies",
     category: "upcoming",
     content: "movie"
   },

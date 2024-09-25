@@ -18,7 +18,7 @@ const Navbar = () => {
 				</Link>
 
 				{/* desktop navbar items */}
-				<div className='hidden sm:flex gap-2 items-center'>
+				<div className='hidden sm:flex gap-10 items-center'>
 					<Link to='/home' className='hover:underline'>
 						Home
 					</Link>
@@ -32,7 +32,7 @@ const Navbar = () => {
 						Tv Shows
 					</Link>
 					<Link to='/myList' className='hover:underline'>
-						my list
+						My List
 					</Link>
 				</div>
 			</div>
